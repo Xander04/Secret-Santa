@@ -1,4 +1,4 @@
-package com.santa.Pages;
+package com.santa;
 
 public class Participant {
     public String html = """
