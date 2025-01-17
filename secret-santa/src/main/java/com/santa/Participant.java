@@ -12,15 +12,6 @@ public class Participant implements Handler{
         String id = context.queryString();
 
         HashMap<String, String> eventInfo = DBManager.readEvent(id);
-
-        HashMap<String, String> data = new HashMap<>();
-
-        data.put("EventID", "69");
-        data.put("CreationDate", "1/1/1999");
-        data.put("EventName", "Machine code");
-        data.put("EventDescription", "Crimmis");
-
-        DBManager.InsertEvent(data);
         String html = "";
         html += String.format("""
         <!DOCTYPE html>
