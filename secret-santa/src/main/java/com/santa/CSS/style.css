@@ -1,13 +1,14 @@
 .sidenav {
-    height: 100%;
-    width: 160px;
     position: fixed; 
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #111; 
     overflow-x: hidden; 
+    background-color: brown;
     padding-top: 20px;
+    grid-area: "sidenav";
+    display: grid;
+    width: 15%;
   }
   
   .sidenav a {
@@ -23,12 +24,29 @@
     color: #f1f1f1;
   }
   
+  .header {
+    grid-area: "header";
+    width: 85%;
+  }
+
+  .content {
+    grid-area: "content";
+    width: 85%;
+  }
+
 
   .main {
     margin-left: 160px;
     padding: 0px 10px;
   }
   
+  .container {
+    display: grid;
+    grid-template-areas: 'sidenav header' 100%
+                         'sidenav content' 100%;
+  }
+
+
   
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}

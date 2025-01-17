@@ -12,17 +12,22 @@ public class Dashboard implements Handler{
         <!DOCTYPE html>
         <head>
             <title>Secret Santa | Dashboard</title>
-            <link rel='stylesheet' type='text/css' href='CSS\style.css' />
+            <link rel='stylesheet' type='text/css' href='style.css' />
         </head>
         <body>
-            <div>
-                <div id = 'sidebar'> </div>
-                <div id = 'header'> 
+            <div class = 'container'>
+                <div class = 'sidenav'> 
+                    <a><div class = 'sidenav-item'> <h2> Home </h2> </div> </a>
+                    <a><div class = 'sidenav-item'> <h2> Summary </h2> </div> </a>
+                    <a><div class = 'sidenav-item'> <h2> Report </h2> </div> </a>
+                    <a><div class = 'sidenav-item'> <h2> Present </h2> </div> </a>
+                </div>
+                <div class = 'header'> 
                     <center>
                         <h1> Dashboard </h1>
                     </center>
                 </div>
-                <div id = 'content' </div>
+                <div class = 'content' </div>
             </div>
         </body>
     </html>
