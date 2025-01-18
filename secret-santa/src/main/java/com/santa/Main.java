@@ -1,7 +1,10 @@
 package com.santa;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.HashMap;
 
+import static com.santa.DBManager.Authenticate;
 import static com.santa.DBManager.ValidateEventID;
 
 import io.javalin.Javalin;
@@ -25,6 +28,7 @@ public class Main {
         app.get("/", new Index());
         app.get("/Dashboard", new Dashboard());
         app.get("/Participant", new Participant());         //?Rename
+        app.get("/login", new Login());
 
         app.post("/", ctx -> {
             String url = "/Participant?" + ctx.formParam("EventId");
@@ -47,6 +51,22 @@ public class Main {
                 ctx.html("Event Not Found!");
             }
             
+        });
+        app.post("/login", ctx -> {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            String EventId = ctx.formParam("EventId");
+            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%X", b));
+            }
+            String hashstr = sb.toString();
+            if (Authenticate(EventId, hashstr)) {
+                ctx.html("Success");
+            }
+            else {
+                ctx.html("Login failure");
+            }
         });
 
     }

@@ -121,4 +121,23 @@ public class DBManager {
                   
     }
 
+    public static boolean Authenticate(String id, String hash) {
+        String query = String.format("SELECT * FROM Auth WHERE EventID = \"%s\" AND PwHash = \"%s\"", id, hash);
+        ArrayList<Integer> events = new ArrayList<>();
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                events.add(rs.getInt("EventID"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return !events.isEmpty();
+    }
+
+
 }
