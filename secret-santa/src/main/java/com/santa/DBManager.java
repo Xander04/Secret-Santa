@@ -7,12 +7,13 @@ import java.util.HashMap;
 
 public class DBManager {
 
+    private static final String URL = "jdbc:sqlite:secret-santa\\src\\main\\resources\\db\\secret-santa.db";
+    
     public static HashMap<String, String> readEvent(String id) {
-        var url = "jdbc:sqlite:secret-santa\\src\\main\\resources\\db\\secret-santa.db";
         HashMap<String, String> data = new HashMap<>();
         String query = String.format("SELECT * FROM Events WHERE EventID = %s", id);
 
-        try (var conn = DriverManager.getConnection(url)) {
+        try (var conn = DriverManager.getConnection(URL)) {
             System.out.println("Connection to SQLite has been established.");
             var stmt = conn.createStatement();
             var rs = stmt.executeQuery(query);
@@ -20,7 +21,7 @@ public class DBManager {
             data.put("EventID", Integer.toString(rs.getInt("EventID")));
             data.put("CreationDate", rs.getString("CreationDate"));
             data.put("EventName", rs.getString("EventName"));
-            data.put("EventDescription", rs.getString("EventDetails"));
+            data.put("EventDescription", rs.getString("EventDescription"));
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -30,11 +31,10 @@ public class DBManager {
     }
 
     public static void InsertEvent(HashMap<String, String> EventData) {
-        var url = "jdbc:sqlite:secret-santa\\src\\main\\resources\\db\\secret-santa.db";
         String query = String.format("INSERT INTO Events (EventID, CreationDate, EventName, EventDescription) VALUES (%s,\"%s\",\"%s\",\"%s\")", EventData.get("EventID"), EventData.get("CreationDate"), EventData.get("EventName"), EventData.get("EventDescription"));
 
         System.out.println(query);
-        try (var conn = DriverManager.getConnection(url)) {
+        try (var conn = DriverManager.getConnection(URL)) {
             System.out.println("Connection to SQLite has been established.");
             var stmt = conn.createStatement();
             stmt.executeQuery(query);
@@ -45,11 +45,10 @@ public class DBManager {
     }
 
     public static HashMap<String, String> readGift(String id) {
-        var url = "jdbc:sqlite:secret-santa\\src\\main\\resources\\db\\secret-santa.db";
         HashMap<String, String> data = new HashMap<>();
         String query = String.format("SELECT * FROM Gifts WHERE GiftID = %s", id);
 
-        try (var conn = DriverManager.getConnection(url)) {
+        try (var conn = DriverManager.getConnection(URL)) {
             System.out.println("Connection to SQLite has been established.");
             var stmt = conn.createStatement();
             var rs = stmt.executeQuery(query);
@@ -68,11 +67,10 @@ public class DBManager {
     }
 
     public static ArrayList<Integer> GiftsFromEvent(String eventId) {
-        var url = "jdbc:sqlite:secret-santa\\src\\main\\resources\\db\\secret-santa.db";
         String query = String.format("SELECT * FROM Gifts WHERE EventID = %s", eventId);
 
         ArrayList<Integer> gifts = new ArrayList<>();
-        try (var conn = DriverManager.getConnection(url)) {
+        try (var conn = DriverManager.getConnection(URL)) {
             System.out.println("Connection to SQLite has been established.");
             var stmt = conn.createStatement();
             var rs = stmt.executeQuery(query);
@@ -89,11 +87,11 @@ public class DBManager {
     }   
 
     public static void InsertGift(HashMap<String, String> GiftData) {
-        var url = "jdbc:sqlite:secret-santa\\src\\main\\resources\\db\\secret-santa.db";
-        String query = String.format("INSERT INTO Gifts (GiftID, EventID, SenderName, RecieverName, GiftDescription) VALUES (%s,\"%s\",\"%s\",\"%s\")", GiftData.get("GiftID"), GiftData.get("EventID"), GiftData.get("SenderName"), GiftData.get("RecieverName"), GiftData.get("GiftDescription"));
+        
+        String query = String.format("INSERT INTO Gifts (EventID, SenderName, RecieverName, GiftDescription) VALUES (\"%s\",\"%s\",\"%s\",\"%s\")", GiftData.get("EventID"), GiftData.get("SenderName"), GiftData.get("RecieverName"), GiftData.get("GiftDescription"));
 
         System.out.println(query);
-        try (var conn = DriverManager.getConnection(url)) {
+        try (var conn = DriverManager.getConnection(URL)) {
             System.out.println("Connection to SQLite has been established.");
             var stmt = conn.createStatement();
             stmt.executeQuery(query);
@@ -101,6 +99,26 @@ public class DBManager {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static boolean ValidateEventID(String id) {
+        String query = String.format("SELECT * FROM Events WHERE EventID = %s", id);
+
+        ArrayList<Integer> events = new ArrayList<>();
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                events.add(rs.getInt("EventID"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return !events.isEmpty();
+                  
     }
 
 }

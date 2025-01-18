@@ -11,11 +11,15 @@ public class Index implements Handler{
         html += """
         <!DOCTYPE html>
         <head>
-            <title>Secret Santa | Dashboard</title>
+            <title>Secret Santa | Home</title>
             <link rel='stylesheet' type='text/css' href='CSS\style.css' />
         </head>
         <body>
-            
+            <form method="post" action="/" enctype="multipart/form-data">
+                <label for="EventId"> Enter Event Code: </label><br>
+                <input type="text" name="EventId"><br>
+                <button>Submit</button><br>
+            </form>
         </body>
     </html>
     """;
