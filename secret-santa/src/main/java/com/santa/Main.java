@@ -36,6 +36,9 @@ public class Main {
         }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
         configureRoutes(app);
 
+        Thread housekeeper = new Elf();
+        housekeeper.start();
+
     }
 
     public static void configureRoutes(Javalin app) {
