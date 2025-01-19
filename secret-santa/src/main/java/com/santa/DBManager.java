@@ -139,6 +139,18 @@ public class DBManager {
         return !events.isEmpty();
     }
 
+    public static void InsertAuth(String id, String hash) {
+        String query = String.format("INSERT INTO Auth (EventId, PwHash) VALUES (\"%s\", \"%s\")", id, hash);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public static void InsertToken(String id, String token) {
         String query = String.format("INSERT INTO Tokens (Token, EventId) VALUES (\"%s\", \"%s\")", token, id);
         try (var conn = DriverManager.getConnection(URL)) {

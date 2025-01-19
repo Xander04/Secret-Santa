@@ -3,6 +3,7 @@ package com.santa;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.HashMap;
 
@@ -41,6 +42,7 @@ public class Main {
         app.get("/Dashboard", new Dashboard());
         app.get("/Participant", new Participant());         //?Rename
         app.get("/login", new Login());
+        app.get("/register", new Register());
 
         app.post("/", ctx -> {
             String url = "/Participant?" + ctx.formParam("EventId");
@@ -82,6 +84,34 @@ public class Main {
             else {
                 ctx.html("Login failure");
             }
+        });
+        app.post("/register", ctx -> {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("EventName", ctx.formParam("EventName"));
+            data.put("EventDescription", ctx.formParam("EventDescription"));
+            data.put("CreationDate", Instant.now().toString());
+            String id = String.format("%04d", secureRandom.nextInt(9999));
+            while (ValidateEventID(id)){
+                id = String.format("%04d", secureRandom.nextInt(9999));
+            }
+            data.put("EventID", id);
+            DBManager.InsertEvent(data);
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%X", b));
+            }
+            String hashstr = sb.toString();
+
+            DBManager.InsertAuth(id, hashstr);
+
+            String tkn = generateNewToken();
+            InsertToken(id, tkn);
+            ctx.cookie("Auth", tkn);
+            ctx.redirect("/Dashboard?" + id);
+
         });
 
     }
