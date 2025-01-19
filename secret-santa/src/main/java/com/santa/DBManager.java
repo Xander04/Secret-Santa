@@ -139,5 +139,33 @@ public class DBManager {
         return !events.isEmpty();
     }
 
+    public static void InsertToken(String id, String token) {
+        String query = String.format("INSERT INTO Tokens (Token, EventId) VALUES (\"%s\", \"%s\")", token, id);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static String AuthVerify(String tkn) {
+        String query = String.format("SELECT * FROM Tokens WHERE Token = \"%s\"", tkn);
+        String events = null;
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+
+            events = rs.getString("EventId");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return events;
+    }
+
 
 }

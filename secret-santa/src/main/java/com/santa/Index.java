@@ -21,7 +21,7 @@ public class Index implements Handler{
                 <button>Submit</button><br>
             </form>
             <a> Create Event </a> <br>
-            <a href="/Dashboard"> Manage Event </a>
+            <a href="/login"> Manage Event </a>
         </body>
     </html>
     """;

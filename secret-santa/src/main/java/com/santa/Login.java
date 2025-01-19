@@ -1,5 +1,7 @@
 package com.santa;
 
+import static com.santa.DBManager.AuthVerify;
+
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 
@@ -26,5 +28,12 @@ public class Login implements Handler {
     """;
 
     context.html(html);
+    
+    String tkn = context.cookie("Auth");
+    String id = AuthVerify(tkn);
+    if(id != null) {
+        context.redirect("/Dashboard?" + id);
+    }
+
     }
 }
