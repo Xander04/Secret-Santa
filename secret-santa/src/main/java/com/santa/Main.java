@@ -18,8 +18,8 @@ public class Main {
     public static final int JAVALIN_PORT = 80;
     public static final String CSS_DIR = "com/santa/CSS/";
 
-    private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
-    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public static String generateNewToken() {
         byte[] randomBytes = new byte[64];
@@ -43,6 +43,13 @@ public class Main {
         app.get("/Participant", new Participant());         //?Rename
         app.get("/login", new Login());
         app.get("/register", new Register());
+
+        app.get("/logout", ctx -> {
+            String tkn = ctx.cookie("Auth");
+            DBManager.Deauthenticate(tkn);
+            ctx.removeCookie("Auth");
+            ctx.redirect("/");
+        });
 
         app.post("/", ctx -> {
             String url = "/Participant?" + ctx.formParam("EventId");

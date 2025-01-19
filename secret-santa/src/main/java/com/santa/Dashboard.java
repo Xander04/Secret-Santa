@@ -24,6 +24,7 @@ public class Dashboard implements Handler{
         <body>
             <div class = 'container'>
                 <div class = 'sidenav'> 
+                    <a href = "/logout"><div class = 'sidenav-item'> <h2> Log Out </h2> </div> </a>
                     <a><div class = 'sidenav-item'> <h2> Home </h2> </div> </a>
                     <a><div class = 'sidenav-item'> <h2> Summary </h2> </div> </a>
                     <a><div class = 'sidenav-item'> <h2> Report </h2> </div> </a>

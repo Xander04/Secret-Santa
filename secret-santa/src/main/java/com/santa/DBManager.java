@@ -138,6 +138,17 @@ public class DBManager {
         }
         return !events.isEmpty();
     }
+    public static void Deauthenticate(String tkn) {
+        String query = String.format("DELETE FROM Tokens WHERE \"Token\" = \"%s\"", tkn);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public static void InsertAuth(String id, String hash) {
         String query = String.format("INSERT INTO Auth (EventId, PwHash) VALUES (\"%s\", \"%s\")", id, hash);
