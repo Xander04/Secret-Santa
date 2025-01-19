@@ -167,5 +167,27 @@ public class DBManager {
         return events;
     }
 
+    public static HashMap<String, String> getEventSummary(String EventId) {
+        HashMap<String, String> results = new HashMap<>();
+
+        HashMap<String, String> EventInfo = readEvent(EventId);
+        results.put("EventName", EventInfo.get("EventName"));
+
+        String query = String.format("SELECT COUNT(*) FROM Gifts WHERE EventID = \"%s\"", EventId);
+        int count = 0;
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+
+            count = rs.getInt("COUNT(*)");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        results.put("GiftCount", Integer.toString(count));
+
+        return results;
+    }
 
 }

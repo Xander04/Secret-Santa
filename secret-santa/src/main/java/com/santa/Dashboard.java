@@ -1,5 +1,9 @@
 package com.santa;
 
+import java.util.HashMap;
+
+import static com.santa.DBManager.getEventSummary;
+
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 
@@ -7,8 +11,11 @@ public class Dashboard implements Handler{
     
     @Override
     public void handle(Context context) throws Exception {
+        String id = context.queryString();
+
+        HashMap<String, String> eventSummary = getEventSummary(id);
         String html = "";
-        html += """
+        html += String.format("""
         <!DOCTYPE html>
         <head>
             <title>Secret Santa | Dashboard</title>
@@ -24,14 +31,17 @@ public class Dashboard implements Handler{
                 </div>
                 <div class = 'header'> 
                     <center>
-                        <h1> Dashboard </h1>
+                        <h1> Dashboard </h1><br>
+                        <h3> %s </h3><br>
+                        <p> Gift Count: %s </p><br>
+
                     </center>
                 </div>
                 <div class = 'content' </div>
             </div>
         </body>
     </html>
-    """;
+    """, eventSummary.get("EventName"), eventSummary.get("GiftCount"));
 
     context.html(html);
     }
