@@ -2,6 +2,7 @@ package com.santa;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -163,7 +164,7 @@ public class DBManager {
     }
 
     public static void InsertToken(String id, String token) {
-        String query = String.format("INSERT INTO Tokens (Token, EventId) VALUES (\"%s\", \"%s\")", token, id);
+        String query = String.format("INSERT INTO Tokens (Token, EventId, Created) VALUES (\"%s\", \"%s\", \"%s\")", token, id, Instant.now().toString());
         try (var conn = DriverManager.getConnection(URL)) {
             System.out.println("Connection to SQLite has been established.");
             var stmt = conn.createStatement();
@@ -195,6 +196,7 @@ public class DBManager {
 
         HashMap<String, String> EventInfo = readEvent(EventId);
         results.put("EventName", EventInfo.get("EventName"));
+        results.put("EventDescription", EventInfo.get("EventDescription"));
 
         String query = String.format("SELECT COUNT(*) FROM Gifts WHERE EventID = \"%s\"", EventId);
         int count = 0;
