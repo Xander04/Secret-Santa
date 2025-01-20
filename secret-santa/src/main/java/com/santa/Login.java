@@ -15,6 +15,7 @@ public class Login implements Handler {
             <title>Secret Santa | Login</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
             <div class="head1">
+            <img src="Images/logo.png" width=20px height=20px>
             </div>
             <div class="head_line">
             </div>
@@ -25,20 +26,31 @@ public class Login implements Handler {
 
                 <div class="formstyle">
                     <form method="post" action="/login" enctype="multipart/form-data">
-                        <label for="EventId"> Enter Event Code: </label><br>
+                        <h1 class="loginTitle"> Log in </h1>
+                        <label for="EventId"> Enter event code </label><br>
                         <input type="text" name="EventId"><br>
-                        <label for="EventPw"> Enter Password: </label><br>
+                        <div class="loginBreak"> </div>
+                        <label for="EventPw"> Password </label><br>
                         <input type="password" name="EventPw"><br>
-                        <button>Submit</button><br>
+                        <div class="loginBreak2"> </div>
+                        <button>Sign in</button><br>
                     </form>
                 </div>
             </aside>
 
             <aside class="login_right" id = "SignUp?">
-
+                <div class="rightSide">
+                    <h1 class="dontText1">Don't have an </h1> <h1 class="dontText"> event yet? </h1>
+                    <form method="get" action="/register">
+                    <button> Create a new event </button>
+                    </form>
+                </div>
             </aside>
 
+        
+
             <div class="foot1">
+            &copy; Xander Dundon 2025
             </div>
         </body>
     </html>
