@@ -18,6 +18,7 @@ public class Main {
     public static final int JAVALIN_PORT = 80;
     public static final String CSS_DIR = "com/santa/Resources/CSS/";
     public static final String JS_DIR = "com/santa/Resources/JS/";
+    public static final String IMG_DIR = "com/santa/Resources/IMG/";
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
@@ -33,6 +34,7 @@ public class Main {
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add(CSS_DIR);
             config.staticFiles.add(JS_DIR);
+            config.staticFiles.add(IMG_DIR);
         }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
         configureRoutes(app);
 
@@ -89,6 +91,7 @@ public class Main {
             String hashstr = sb.toString();
             if (Authenticate(EventId, hashstr)) {
                 ctx.html("Success");
+                System.out.println(ctx.formParam("tokenise"));
                 String tkn = generateNewToken();
                 InsertToken(EventId, tkn);
                 ctx.cookie("Auth", tkn);
