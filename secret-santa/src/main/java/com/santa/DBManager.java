@@ -2,6 +2,8 @@ package com.santa;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -138,9 +140,32 @@ public class DBManager {
         }
         return !events.isEmpty();
     }
+    public static void Deauthenticate(String tkn) {
+        String query = String.format("DELETE FROM Tokens WHERE \"Token\" = \"%s\"", tkn);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void InsertAuth(String id, String hash) {
+        String query = String.format("INSERT INTO Auth (EventId, PwHash) VALUES (\"%s\", \"%s\")", id, hash);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public static void InsertToken(String id, String token) {
-        String query = String.format("INSERT INTO Tokens (Token, EventId) VALUES (\"%s\", \"%s\")", token, id);
+        String query = String.format("INSERT INTO Tokens (Token, EventId, Created) VALUES (\"%s\", \"%s\", \"%s\")", token, id, Instant.now().toString());
         try (var conn = DriverManager.getConnection(URL)) {
             System.out.println("Connection to SQLite has been established.");
             var stmt = conn.createStatement();
@@ -172,6 +197,7 @@ public class DBManager {
 
         HashMap<String, String> EventInfo = readEvent(EventId);
         results.put("EventName", EventInfo.get("EventName"));
+        results.put("EventDescription", EventInfo.get("EventDescription"));
 
         String query = String.format("SELECT COUNT(*) FROM Gifts WHERE EventID = \"%s\"", EventId);
         int count = 0;
@@ -188,6 +214,87 @@ public class DBManager {
         results.put("GiftCount", Integer.toString(count));
 
         return results;
+    }
+
+    public static ArrayList<String> housekeepEvents() {
+        ArrayList<String> toPurge = new ArrayList<>();
+        String query = "SELECT EventID, CreationDate FROM Events";
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                if (ChronoUnit.DAYS.between(Instant.parse(rs.getString("CreationDate")),Instant.now()) > 14) {
+                    toPurge.add(rs.getString("EventID"));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return toPurge;
+    }
+
+    public static ArrayList<String> housekeepTokens() {
+        ArrayList<String> toPurge = new ArrayList<>();
+        String query = "SELECT Token, Created FROM Tokens";
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                if (ChronoUnit.DAYS.between(Instant.parse(rs.getString("Created")),Instant.now()) > 1) {
+                    toPurge.add(rs.getString("Token"));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return toPurge;
+    }
+
+    public static void DeleteEvent(String id) {
+        String query1 = String.format("DELETE FROM Gifts WHERE \"EventID\" = \"%s\"", id);
+        String query2 = String.format("DELETE FROM Auth WHERE \"EventId\" = %s", id);
+        String query3 = String.format("DELETE FROM Tokens WHERE \"EventId\" = \"%s\"", id);
+        String query4 = String.format("DELETE FROM Events WHERE \"EventID\" = %s", id);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query1);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query2);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query3);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query4);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }

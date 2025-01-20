@@ -13,6 +13,10 @@ public class Dashboard implements Handler{
     public void handle(Context context) throws Exception {
         String id = context.queryString();
 
+        if (!DBManager.AuthVerify(context.cookie("Auth")).equals(id)) {
+            context.redirect("/");
+        }
+
         HashMap<String, String> eventSummary = getEventSummary(id);
         String html = "";
         html += String.format("""
@@ -24,15 +28,15 @@ public class Dashboard implements Handler{
         <body>
             <div class = 'container'>
                 <div class = 'sidenav'> 
-                    <a><div class = 'sidenav-item'> <h2> Home </h2> </div> </a>
+                    <a href = "/logout"><div class = 'sidenav-item'> <h2> Log Out </h2> </div> </a>
                     <a><div class = 'sidenav-item'> <h2> Summary </h2> </div> </a>
-                    <a><div class = 'sidenav-item'> <h2> Report </h2> </div> </a>
+                    <a href = "/report?%s"><div class = 'sidenav-item'> <h2> Report </h2> </div> </a>
                     <a><div class = 'sidenav-item'> <h2> Present </h2> </div> </a>
                 </div>
                 <div class = 'header'> 
                     <center>
                         <h1> Dashboard </h1><br>
-                        <h3> %s </h3><br>
+                        <h3> %s - %s</h3><br>
                         <p> Gift Count: %s </p><br>
 
                     </center>
@@ -41,7 +45,7 @@ public class Dashboard implements Handler{
             </div>
         </body>
     </html>
-    """, eventSummary.get("EventName"), eventSummary.get("GiftCount"));
+    """, id, eventSummary.get("EventName"), id, eventSummary.get("GiftCount"));
 
     context.html(html);
     }

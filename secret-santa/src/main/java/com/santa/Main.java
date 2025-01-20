@@ -3,6 +3,7 @@ package com.santa;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.HashMap;
 
@@ -15,10 +16,11 @@ import io.javalin.Javalin;
 public class Main {
 
     public static final int JAVALIN_PORT = 80;
-    public static final String CSS_DIR = "com/santa/CSS/";
+    public static final String CSS_DIR = "com/santa/Resources/CSS/";
+    public static final String JS_DIR = "com/santa/Resources/JS/";
 
-    private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
-    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public static String generateNewToken() {
         byte[] randomBytes = new byte[64];
@@ -30,8 +32,12 @@ public class Main {
 
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add(CSS_DIR);
+            config.staticFiles.add(JS_DIR);
         }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
         configureRoutes(app);
+
+        Thread housekeeper = new Elf();
+        housekeeper.start();
 
     }
 
@@ -41,6 +47,15 @@ public class Main {
         app.get("/Dashboard", new Dashboard());
         app.get("/Participant", new Participant());         //?Rename
         app.get("/login", new Login());
+        app.get("/register", new Register());
+        app.get("/report", new Report());
+
+        app.get("/logout", ctx -> {
+            String tkn = ctx.cookie("Auth");
+            DBManager.Deauthenticate(tkn);
+            ctx.removeCookie("Auth");
+            ctx.redirect("/");
+        });
 
         app.post("/", ctx -> {
             String url = "/Participant?" + ctx.formParam("EventId");
@@ -82,6 +97,34 @@ public class Main {
             else {
                 ctx.html("Login failure");
             }
+        });
+        app.post("/register", ctx -> {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("EventName", ctx.formParam("EventName"));
+            data.put("EventDescription", ctx.formParam("EventDescription"));
+            data.put("CreationDate", Instant.now().toString());
+            String id = String.format("%04d", secureRandom.nextInt(9999));
+            while (ValidateEventID(id)){
+                id = String.format("%04d", secureRandom.nextInt(9999));
+            }
+            data.put("EventID", id);
+            DBManager.InsertEvent(data);
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%X", b));
+            }
+            String hashstr = sb.toString();
+
+            DBManager.InsertAuth(id, hashstr);
+
+            String tkn = generateNewToken();
+            InsertToken(id, tkn);
+            ctx.cookie("Auth", tkn);
+            ctx.redirect("/Dashboard?" + id);
+
         });
 
     }
