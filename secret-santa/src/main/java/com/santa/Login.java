@@ -13,16 +13,33 @@ public class Login implements Handler {
         <!DOCTYPE html>
         <head>
             <title>Secret Santa | Login</title>
-            <link rel='stylesheet' type='text/css' href='CSS\style.css' />
+            <link rel='stylesheet' type='text/css' href='style.css' />
+            <div class="head1">
+            </div>
+            <div class="head_line">
+            </div>
         </head>
         <body>
-            <form method="post" action="/login" enctype="multipart/form-data">
-                <label for="EventId"> Enter Event Code: </label><br>
-                <input type="text" name="EventId"><br>
-                <label for="EventPw"> Enter Password: </label><br>
-                <input type="password" name="EventPw"><br>
-                <button>Submit</button><br>
-            </form>
+
+            <aside class="login_left" id = "Log in">
+
+                <div class="formstyle">
+                    <form method="post" action="/login" enctype="multipart/form-data">
+                        <label for="EventId"> Enter Event Code: </label><br>
+                        <input type="text" name="EventId"><br>
+                        <label for="EventPw"> Enter Password: </label><br>
+                        <input type="password" name="EventPw"><br>
+                        <button>Submit</button><br>
+                    </form>
+                </div>
+            </aside>
+
+            <aside class="login_right" id = "SignUp?">
+
+            </aside>
+
+            <div class="foot1">
+            </div>
         </body>
     </html>
     """;

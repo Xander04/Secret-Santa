@@ -12,7 +12,7 @@ public class Index implements Handler{
         <!DOCTYPE html>
         <head>
             <title>Secret Santa | Home</title>
-            <link rel='stylesheet' type='text/css' href='CSS\style.css' />
+            <link rel='stylesheet' type='text/css' href='style.css' />
         </head>
         <body>
             <form method="post" action="/" enctype="multipart/form-data">
