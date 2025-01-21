@@ -15,7 +15,12 @@ public class Login implements Handler {
             <title>Secret Santa | Login</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
             <div class="head1">
-            <img src="Images/logo.png" width=20px height=20px>
+            <img src="logo.png" class="logo" width=75px>
+            <div class="titleHolder">
+            <h1 class="pageTitle">MachineCode Secret Santa</h1>
+            </div>
+            <div class="headSpace"> </div>
+            <button class="dropDown">Events &#x25BC;</button>
             </div>
             <div class="head_line">
             </div>
