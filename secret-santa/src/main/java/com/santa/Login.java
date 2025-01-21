@@ -14,13 +14,23 @@ public class Login implements Handler {
         <head>
             <title>Secret Santa | Login</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
+            <script type="text/javascript" src="script.js"></script>
             <div class="head1">
             <img src="logo.png" class="logo" width=75px>
             <div class="titleHolder">
             <h1 class="pageTitle">MachineCode Secret Santa</h1>
             </div>
             <div class="headSpace"> </div>
-            <button class="dropDown">Events &#x25BC;</button>
+                <div class="dropdown">
+                    <button onclick="dropFunction()" class="dropDown">Events &#x25BC;</button>
+                    <div id="eventDrop" class="dropdown-content dropdown-content-el">
+                        <a href="/register">Create</a>
+                        <div class="dropdown-line"> </div>
+                    </div>
+                    <div id="eventDrop1" class="dropdown-content-1 dropdown-content-el">
+                        <a href="/login">Manage</a>
+                    </div>
+                </div>
             </div>
             <div class="head_line">
             </div>
