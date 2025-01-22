@@ -16,11 +16,12 @@ import io.javalin.community.ssl.SslPlugin;
 
 public class Main {
 
-    public static final int JAVALIN_PORT = 80;
+    public static final int JAVALIN_PORT = 8080;
     public static final String CSS_DIR = "com/santa/Resources/CSS/";
     public static final String JS_DIR = "com/santa/Resources/JS/";
     public static final String IMG_DIR = "com/santa/Resources/IMG/";
     public static final String SSL_DIR = "secret-santa/src/main/java/com/santa/Resources/SECURE/";
+    public static final boolean SSL_ENABLED = false;
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
@@ -31,6 +32,7 @@ public class Main {
         return base64Encoder.encodeToString(randomBytes);
     }
 
+    @SuppressWarnings("unused")
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
@@ -38,14 +40,16 @@ public class Main {
             config.staticFiles.add(JS_DIR);
             config.staticFiles.add(IMG_DIR);
 
-            try {
-                SslPlugin plugin = new SslPlugin(conf -> {
-                    conf.pemFromPath(SSL_DIR + "certificate.pem", SSL_DIR + "privateKey.pem");
-                }); 
-                config.registerPlugin(plugin);
-            }
-            catch (Exception e) {
-                System.err.println("Unable to start SSL. Have you generated a certificate?");
+            if (SSL_ENABLED == true) {
+                try {
+                    SslPlugin plugin = new SslPlugin(conf -> {
+                        conf.pemFromPath(SSL_DIR + "certificate.pem", SSL_DIR + "privateKey.pem");
+                    }); 
+                    config.registerPlugin(plugin);
+                }
+                catch (Exception e) {
+                    System.err.println("Unable to start SSL. Have you generated a certificate?");
+                }
             }
         }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
         configureRoutes(app);
