@@ -38,8 +38,8 @@ public class Main {
         }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
         configureRoutes(app);
 
-        Thread housekeeper = new Elf();
-        housekeeper.start();
+        //Thread housekeeper = new Elf();
+       // housekeeper.start();
 
     }
 

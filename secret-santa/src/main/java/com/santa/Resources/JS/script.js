@@ -14,3 +14,23 @@ function displayText(id) {
     revealbutton.style.display = "block";
     hidetext.style.display = "none";
   }
+
+  function dropFunction() {
+    document.getElementById("eventDrop").classList.toggle("show");
+    document.getElementById("eventDrop1").classList.toggle("show");
+  }
+
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropDown')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content-el");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+
+  //TODO: Make the events dropdown colour stay changed when events has been clicked
