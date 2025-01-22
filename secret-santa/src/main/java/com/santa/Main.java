@@ -41,7 +41,7 @@ public class Main {
             config.staticFiles.add(JS_DIR);
             config.staticFiles.add(IMG_DIR);
 
-            if (SSL_ENABLED == true) {
+            if (SSL_ENABLED) {
                 try {
                     SslPlugin plugin = new SslPlugin(conf -> {
                         conf.pemFromPath(SSL_DIR + "certificate.pem", SSL_DIR + "privateKey.pem");
