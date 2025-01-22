@@ -12,8 +12,9 @@ public class Dashboard implements Handler{
     @Override
     public void handle(Context context) throws Exception {
         String id = context.queryString();
-
-        if (!DBManager.AuthVerify(context.cookie("Auth")).equals(id)) {
+        
+        String tkn = DBManager.AuthVerify(context.cookie("Auth"));
+        if (tkn == null || !tkn.equals(id)) {
             context.redirect("/");
         }
 
