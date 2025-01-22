@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class DBManager {
 
-    private static final String URL = "jdbc:sqlite:secret-santa\\src\\main\\resources\\db\\secret-santa.db";
+    private static final String URL = "jdbc:sqlite:secret-santa/src/main/resources/db/secret-santa.db";
     
     public static HashMap<String, String> readEvent(String id) {
         HashMap<String, String> data = new HashMap<>();
