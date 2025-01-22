@@ -137,7 +137,7 @@
   .dropDown {
     color: #5a7b54;
     background-color:transparent;
-    width: 10vw;
+    width: 10%;
     height: 3.5vh;
     text-indent:5px;
     font-size:calc(8px + 0.8vw);
@@ -148,6 +148,7 @@
   }
 
   .headSpace {
+    display:flex;
     flex-basis:65%;
     min-width: 20%;
     max-width:65%;
