@@ -2,6 +2,7 @@ package com.santa;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -33,23 +34,22 @@ public class Main {
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
     }
-    public static String getPwHash(Context ctx) {
-        String hashstr = null;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
+    public static String getPwHash(Context ctx) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        String hashstr = "";
+        String EventPw = ctx.formParam("EventPw");
+        if (EventPw != null) {
+            byte[] hash = digest.digest(EventPw.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte b : hash) {
                 sb.append(String.format("%X", b));
             }
             hashstr = sb.toString();
-            
         }
-        catch (Exception e) {}
+            
         return hashstr;
     }
 
-    @SuppressWarnings("unused")
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
