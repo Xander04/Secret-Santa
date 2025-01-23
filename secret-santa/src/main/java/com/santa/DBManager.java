@@ -230,6 +230,10 @@ public class DBManager {
                 }
             }
 
+            for (String event : toPurge) {
+                DBManager.DeleteEvent(event);
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

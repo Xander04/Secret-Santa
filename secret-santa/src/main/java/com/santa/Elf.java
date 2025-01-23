@@ -9,10 +9,6 @@ public class Elf extends Thread {
             //Purge old events
             ArrayList<String> events = DBManager.housekeepEvents();
 
-            for (String event : events) {
-                DBManager.DeleteEvent(event);
-            }
-
             if (!events.isEmpty()) {
                 System.out.println("Purged " + events.size() + " events");
             }
