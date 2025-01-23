@@ -13,6 +13,7 @@ import static com.santa.DBManager.ValidateEventID;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SslPlugin;
+import io.javalin.http.Context;
 
 public class Main {
 
@@ -31,6 +32,21 @@ public class Main {
         byte[] randomBytes = new byte[64];
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
+    }
+    public static String getPwHash(Context ctx) {
+        String hashstr = null;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%X", b));
+            }
+            hashstr = sb.toString();
+            
+        }
+        catch (Exception e) {}
+        return hashstr;
     }
 
     @SuppressWarnings("unused")
@@ -102,14 +118,8 @@ public class Main {
             
         });
         app.post("/login", ctx -> {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
             String EventId = ctx.formParam("EventId");
-            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) {
-                sb.append(String.format("%X", b));
-            }
-            String hashstr = sb.toString();
+            String hashstr = getPwHash(ctx);
             if (Authenticate(EventId, hashstr)) {
                 ctx.html("Success");
                 System.out.println(ctx.formParam("tokenise"));
@@ -134,13 +144,7 @@ public class Main {
             data.put("EventID", id);
             DBManager.InsertEvent(data);
 
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) {
-                sb.append(String.format("%X", b));
-            }
-            String hashstr = sb.toString();
+            String hashstr = getPwHash(ctx);
 
             DBManager.InsertAuth(id, hashstr);
 
