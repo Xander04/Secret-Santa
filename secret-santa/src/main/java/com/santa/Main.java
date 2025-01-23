@@ -12,7 +12,7 @@ import static com.santa.DBManager.InsertToken;
 import static com.santa.DBManager.ValidateEventID;
 
 import io.javalin.Javalin;
-import io.javalin.http.Context;
+import io.javalin.community.ssl.SslPlugin;
 
 public class Main {
 
@@ -21,6 +21,8 @@ public class Main {
     public static final String CSS_DIR = "com/santa/Resources/CSS/";
     public static final String JS_DIR = "com/santa/Resources/JS/";
     public static final String IMG_DIR = "com/santa/Resources/IMG/";
+    public static final String SSL_DIR = "secret-santa/src/main/java/com/santa/Resources/SECURE/";
+    public static final boolean SSL_ENABLED = true;
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
@@ -30,21 +32,6 @@ public class Main {
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
     }
-    public static String getPwHash(Context ctx) {
-        String hashstr = null;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) {
-                sb.append(String.format("%X", b));
-            }
-            hashstr = sb.toString();
-            
-        }
-        catch (Exception e) {}
-        return hashstr;
-    }
 
     @SuppressWarnings("unused")
     public static void main(String[] args) {
@@ -53,6 +40,22 @@ public class Main {
             config.staticFiles.add(CSS_DIR);
             config.staticFiles.add(JS_DIR);
             config.staticFiles.add(IMG_DIR);
+
+            if (SSL_ENABLED) {
+                try {
+                    SslPlugin plugin = new SslPlugin(conf -> {
+                        conf.pemFromPath(SSL_DIR + "certificate.pem", SSL_DIR + "privateKey.pem");
+                        conf.host = HOSTNAME;
+                        conf.redirect = true;
+                        conf.sniHostCheck = false; //! Enable after testing
+                    }); 
+                    config.registerPlugin(plugin);
+                }
+                catch (Exception e) {
+                    System.err.println("Unable to start SSL. Have you generated a certificate?");
+                    System.err.println(e);
+                }
+            }
         }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
         configureRoutes(app);
 
@@ -99,8 +102,14 @@ public class Main {
             
         });
         app.post("/login", ctx -> {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
             String EventId = ctx.formParam("EventId");
-            String hashstr = getPwHash(ctx);
+            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%X", b));
+            }
+            String hashstr = sb.toString();
             if (Authenticate(EventId, hashstr)) {
                 ctx.html("Success");
                 System.out.println(ctx.formParam("tokenise"));
@@ -125,7 +134,13 @@ public class Main {
             data.put("EventID", id);
             DBManager.InsertEvent(data);
 
-            String hashstr = getPwHash(ctx);
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(ctx.formParam("EventPw").getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%X", b));
+            }
+            String hashstr = sb.toString();
 
             DBManager.InsertAuth(id, hashstr);
 
