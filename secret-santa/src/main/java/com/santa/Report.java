@@ -15,7 +15,8 @@ public class Report implements Handler{
     public void handle(Context context) throws Exception {
         String id = context.queryString();
 
-        if (!DBManager.AuthVerify(context.cookie("Auth")).equals(id)) {
+        String tkn = DBManager.AuthVerify(context.cookie("Auth"));
+        if (tkn == null || !tkn.equals(id)) {
             context.redirect("/");
         }
 
@@ -36,14 +37,15 @@ public class Report implements Handler{
                     <a><div class = 'sidenav-item'> <h2> Report </h2> </div> </a>
                     <a><div class = 'sidenav-item'> <h2> Present </h2> </div> </a>
                 </div>
-        """, id);
-        html += """
                 <div class = 'header'> 
                     <center>
                     <h1> Gift Report </h1>
                     </center>
                 </div>
                 <div class = 'content'>
+        """, id);
+        if (gifts.size() > 0) {
+        html += """
                         <table id = "report">
                             <tr>
                                 <th> Sender </th>
@@ -57,7 +59,7 @@ public class Report implements Handler{
             html += String.format("""
                     <tr>
                         <td> 
-                        <button onclick="displayText(%s)" id="%sa" style="display: block">Reveal</button>
+                        <button onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
                         <button onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
                             <div id="%s" style="display: none;">
                             %s
@@ -70,6 +72,16 @@ public class Report implements Handler{
         }
         html += """
                     </table>
+                    """;
+                            
+    }
+    else {
+        html += """
+                <h2> No Gifts Yet! </h3> <br>
+                <h3> Spread the word and have participants register their gifts </h3>
+                """;
+    }
+    html += """
                 </div>
             </div>
         </body>
