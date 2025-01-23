@@ -13,18 +13,22 @@ public class Elf extends Thread {
                 DBManager.DeleteEvent(event);
             }
 
-            System.out.println(events);
+            if (!events.isEmpty()) {
+                System.out.println("Purged " + events.size() + " events");
+            }
 
             //Purge old auth tokens
             ArrayList<String> tokens = DBManager.housekeepTokens();
             
-            System.out.println(tokens);
+            if (!tokens.isEmpty()) {
+                System.out.println("Purged " + tokens.size() + " tokens");
+            }
     
             for (String token : tokens) {
                 DBManager.Deauthenticate(token);
             }
             try {
-                Thread.sleep(9999);
+                Thread.sleep(60000);
             } catch (InterruptedException e) {
                 System.err.println(e);
             }
