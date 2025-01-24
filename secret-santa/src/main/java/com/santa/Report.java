@@ -44,7 +44,7 @@ public class Report implements Handler{
                 </div>
                 <div class = 'content'>
         """, id);
-        if (gifts.isEmpty()) {
+        if (!gifts.isEmpty()) {
         html += """
                         <table id = "report">
                             <tr>
