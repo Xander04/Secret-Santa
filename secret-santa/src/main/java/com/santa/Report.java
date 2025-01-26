@@ -57,18 +57,19 @@ public class Report implements Handler{
         for (int i = 0; i < gifts.size(); i++) {
             HashMap<String, String> giftInfo = readGift(Integer.toString(gifts.get(i)));
             html += String.format("""
-                    <tr>
+                    <tr id="%s">
                         <td> 
                         <button onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
                         <button onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
-                            <div id="%s" style="display: none;">
+                            <div id="%sc" style="display: none;">
                             %s
                             </div> 
                         </td>
                         <td> %s </td>
                         <td> %s </td>
+                        <td class="deleteButton"> <button class="deleteButton" onclick="deleteEvent(%s, %s)"> &#128465 </button> </td>
                     </tr>
-                    """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"));
+                    """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"), giftInfo.get("EventID"), giftInfo.get("GiftID"));
         }
         html += """
                     </table>

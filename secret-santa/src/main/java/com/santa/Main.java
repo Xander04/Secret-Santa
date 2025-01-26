@@ -15,6 +15,7 @@ import static com.santa.DBManager.ValidateEventID;
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SslPlugin;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 
 public class Main {
 
@@ -153,6 +154,23 @@ public class Main {
             ctx.cookie("Auth", tkn);
             ctx.redirect("/Dashboard?" + id);
 
+        });
+        app.delete("/report", ctx -> {
+            System.out.println("delete" + ctx.header("EventId"));
+            System.out.println("auth: " + ctx.cookie("Auth"));
+            String eventId = DBManager.AuthVerify(ctx.cookie("Auth"));
+            if(eventId != null && eventId.equals(ctx.header("EventId"))) {
+                DBManager.deleteGift(ctx.header("GiftId"));
+                ctx.status(HttpStatus.OK);
+            }
+            else {
+                System.err.println("Invalid auth to delete gift: ");
+                System.err.println("    Auth: " + ctx.cookie("Auth"));
+                System.err.println("    EventId: " + ctx.header("EventId"));
+                System.err.println("    GiftId: " + ctx.header("GiftId"));
+                ctx.status(HttpStatus.FORBIDDEN);
+
+            }
         });
 
     }

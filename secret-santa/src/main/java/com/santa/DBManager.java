@@ -301,4 +301,17 @@ public class DBManager {
         }
     }
 
+    public static void deleteGift(String giftId) {
+        String query = String.format("DELETE FROM Gifts WHERE \"GiftID\" = \"%s\"", giftId);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query);
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        
+        }
+    }
+
 }

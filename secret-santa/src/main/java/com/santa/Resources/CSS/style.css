@@ -60,6 +60,15 @@
     width: 100%;
  }
 
+ .deleteButton {
+  background-color: red;
+  width: fit-content;
+  font-weight: bold;
+ }
+ td.deleteButton {
+  width:1px;
+ }
+
 
   
   @media screen and (max-height: 450px) {
