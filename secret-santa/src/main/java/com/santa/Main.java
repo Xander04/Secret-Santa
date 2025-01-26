@@ -164,10 +164,12 @@ public class Main {
                 ctx.status(HttpStatus.OK);
             }
             else {
-                System.err.println("Invalid auth to delete gift: ");
-                System.err.println("    Auth: " + ctx.cookie("Auth"));
-                System.err.println("    EventId: " + ctx.header("EventId"));
-                System.err.println("    GiftId: " + ctx.header("GiftId"));
+                System.err.printf("""
+                    Invalid auth to delete gift: 
+                        Auth: %s
+                        EventId: %s 
+                        GiftId: %s
+                                                """, ctx.cookie("Auth"), ctx.header("EventId"), ctx.header("GiftId"));
                 ctx.status(HttpStatus.FORBIDDEN);
 
             }
