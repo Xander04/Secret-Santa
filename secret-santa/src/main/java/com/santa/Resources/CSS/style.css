@@ -68,6 +68,12 @@
  td.deleteButton {
   width:1px;
  }
+ td.ShowHide {
+  width: 1px;
+ }
+ td.ShowHide > button {
+  width: 100%;
+ }
 
 
   

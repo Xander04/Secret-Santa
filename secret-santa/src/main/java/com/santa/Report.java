@@ -48,9 +48,11 @@ public class Report implements Handler{
         html += """
                         <table id = "report">
                             <tr>
+                                <th></th>
                                 <th> Sender </th>
                                 <th> Recipient </th>
                                 <th> Description </th>
+                                <th></th>
                             </tr>
 
                             """;
@@ -58,9 +60,11 @@ public class Report implements Handler{
             HashMap<String, String> giftInfo = readGift(Integer.toString(gifts.get(i)));
             html += String.format("""
                     <tr id="%s">
+                        <td class="ShowHide">
+                            <button onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
+                            <button onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
+                        </td>
                         <td> 
-                        <button onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
-                        <button onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
                             <div id="%sc" style="display: none;">
                             %s
                             </div> 
