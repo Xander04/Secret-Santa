@@ -1,16 +1,41 @@
 var index = 0;
 var gifts = [];
+var hidden = true;
+
+ const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
 function updateCard(sender, reciever, description) {
     document.getElementById("name_to").innerHTML = "To: " +  gifts[index]["RecipientName"];
     document.getElementById("name_from").innerHTML = "Secret Santa";
     document.getElementById("name_from").className = "hidden";
     document.getElementById("description").innerHTML = gifts[index]["GiftDescription"];
+
+    hidden = true;
+    Animation();
 }
 
-function revealSender() {
-    document.getElementById("name_from").innerHTML = gifts[index]["SenderName"];
-    document.getElementById("name_from").className = "shown";
+async function revealSender() {
+    var button = document.getElementById('name_from');
+    button.style.animationName = "fade-out";
+    button.style.opacity = 0;
+    await sleep(500);
+    button.innerHTML = gifts[index]["SenderName"];
+    button.className = "shown";
+    button.style.transform='rotate('+0+'deg)'; 
+    button.style.opacity = 0;
+    button.style.animationName = "fade-in";
+    button.style.opacity = 1;
+    hidden = false;
+}
+
+async function Animation() {
+    var button = document.getElementById('name_from');
+    while (hidden) {
+        button.style.transform='rotate('+-5+'deg)'; 
+        await sleep(1000);
+        button.style.transform='rotate('+5+'deg)';
+        await sleep(1000);
+    }
 }
 
 function next() {

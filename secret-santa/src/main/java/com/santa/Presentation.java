@@ -27,7 +27,9 @@ public class Presentation implements Handler{
             <div id="pres_container" >
                 <h1> %s </h1>
                 <p id="name_to">To: </p>
-                <p style="display:inline-block;"> From: </p><button id="name_from" class="hidden" onclick="revealSender()"></button>
+                <div id="animate" onload="animation()">
+                    <p style="display:inline-block;"> From: </p><button id="name_from" class="hidden" onclick="revealSender()"></button>
+                </div>
                 <p id="description"> </p>
                 <button onclick="next()"> Next </button>
             </div>
