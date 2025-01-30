@@ -81,3 +81,12 @@
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
   }
+
+  button#name_from {
+    display:inline-block;
+  }
+
+  .shown {
+    background: none;
+    border: none;
+  }

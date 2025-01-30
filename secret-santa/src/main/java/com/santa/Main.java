@@ -89,6 +89,19 @@ public class Main {
         app.get("/login", new Login());
         app.get("/register", new Register());
         app.get("/report", new Report());
+        app.get("/presentation", new Presentation());
+        
+        app.get("/presentation-data", ctx -> {
+            String id = ctx.queryString();
+
+        String tkn = DBManager.AuthVerify(ctx.cookie("Auth"));
+        if (tkn == null || !tkn.equals(id)) {
+            ctx.status(HttpStatus.FORBIDDEN);
+        }
+
+        ctx.header("giftContent", DBManager.getPresJson(id));
+        ctx.status(HttpStatus.OK);
+        });
 
         app.get("/logout", ctx -> {
             String tkn = ctx.cookie("Auth");
