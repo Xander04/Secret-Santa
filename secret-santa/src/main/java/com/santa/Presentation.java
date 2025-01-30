@@ -10,10 +10,7 @@ public class Presentation implements Handler{
 
         String id = context.queryString();
 
-        String tkn = DBManager.AuthVerify(context.cookie("Auth"));
-        if (tkn == null || !tkn.equals(id)) {
-            context.redirect("/");
-        }
+        Helper.Authenticate(context);
 
         String html = "";
         html += String.format("""
