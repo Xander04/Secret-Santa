@@ -73,7 +73,7 @@ public class Main {
                     System.err.println(e);
                 }
             }
-        }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
+        }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!")).error(HttpStatus.FORBIDDEN, ctx -> ctx.redirect("/"));
         configureRoutes(app);
 
         Thread housekeeper = new Elf();
@@ -124,7 +124,7 @@ public class Main {
             if (ValidateEventID(data.get("EventID"))) {
                 DBManager.InsertGift(data);
 
-            ctx.html("Done!");
+                ctx.html("Done!");
             }
             else{
                 ctx.html("Event Not Found!");

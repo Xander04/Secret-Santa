@@ -13,10 +13,7 @@ public class Dashboard implements Handler{
     public void handle(Context context) throws Exception {
         String id = context.queryString();
         
-        String tkn = DBManager.AuthVerify(context.cookie("Auth"));
-        if (tkn == null || !tkn.equals(id)) {
-            context.redirect("/");
-        }
+        Helper.Authenticate(context);
 
         HashMap<String, String> eventSummary = getEventSummary(id);
         String html = "";
