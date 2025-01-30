@@ -85,7 +85,7 @@
   button#name_from {
     display:inline-block;
     transform: rotate(90deg);
-    transition: transform 0.5s opacity 1s;
+    transition: transform 0.75s;
     animation-iteration-count: 1;
     animation-timing-function: ease-in;
     animation-duration: 1s;
