@@ -13,7 +13,7 @@ public class Login implements Handler {
         <!DOCTYPE html>
         <head>
             <title>Secret Santa | Login</title>
-            <link rel='stylesheet' type='text/css' href='CSS\style.css' />
+            <link rel='stylesheet' type='text/css' href='style.css' />
         </head>
         <body>
             <form method="post" action="/login" enctype="multipart/form-data">

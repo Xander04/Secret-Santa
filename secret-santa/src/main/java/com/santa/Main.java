@@ -73,7 +73,15 @@ public class Main {
                     System.err.println(e);
                 }
             }
-        }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!")).error(HttpStatus.FORBIDDEN, ctx -> ctx.redirect("/"));
+        }).start(JAVALIN_PORT)
+            .error(HttpStatus.NOT_FOUND, ctx -> ctx.html("Page not found!"))
+            .error(HttpStatus.FORBIDDEN, ctx -> {
+                ctx.html("<script>alert('You do not have access to this page') </script>");
+                ctx.redirect("/");
+
+            })
+            .error(HttpStatus.INTERNAL_SERVER_ERROR, ctx -> ctx.html("Internal Server Error"))
+        ;
         configureRoutes(app);
 
         Thread housekeeper = new Elf();
