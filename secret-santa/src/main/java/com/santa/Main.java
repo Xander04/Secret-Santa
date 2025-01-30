@@ -27,30 +27,6 @@ public class Main {
     public static final String SSL_DIR = "secret-santa/src/main/java/com/santa/Resources/SECURE/";
     public static final boolean SSL_ENABLED = true;
 
-    private static final SecureRandom secureRandom = new SecureRandom();
-    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
-
-    public static String generateNewToken() {
-        byte[] randomBytes = new byte[64];
-        secureRandom.nextBytes(randomBytes);
-        return base64Encoder.encodeToString(randomBytes);
-    }
-    public static String getPwHash(Context ctx) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        String hashstr = "";
-        String EventPw = ctx.formParam("EventPw");
-        if (EventPw != null) {
-            byte[] hash = digest.digest(EventPw.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) {
-                sb.append(String.format("%X", b));
-            }
-            hashstr = sb.toString();
-        }
-            
-        return hashstr;
-    }
-
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
@@ -141,11 +117,11 @@ public class Main {
         });
         app.post("/login", ctx -> {
             String EventId = ctx.formParam("EventId");
-            String hashstr = getPwHash(ctx);
+            String hashstr = Helper.getPwHash(ctx);
             if (Authenticate(EventId, hashstr)) {
                 ctx.html("Success");
                 System.out.println(ctx.formParam("tokenise"));
-                String tkn = generateNewToken();
+                String tkn = Helper.generateNewToken();
                 InsertToken(EventId, tkn);
                 ctx.cookie("Auth", tkn);
                 ctx.redirect("/Dashboard?" + EventId);
@@ -155,6 +131,7 @@ public class Main {
             }
         });
         app.post("/register", ctx -> {
+            final SecureRandom secureRandom = new SecureRandom();
             HashMap<String, String> data = new HashMap<>();
             data.put("EventName", ctx.formParam("EventName"));
             data.put("EventDescription", ctx.formParam("EventDescription"));
@@ -166,11 +143,11 @@ public class Main {
             data.put("EventID", id);
             DBManager.InsertEvent(data);
 
-            String hashstr = getPwHash(ctx);
+            String hashstr = Helper.getPwHash(ctx);
 
             DBManager.InsertAuth(id, hashstr);
 
-            String tkn = generateNewToken();
+            String tkn = Helper.generateNewToken();
             InsertToken(id, tkn);
             ctx.cookie("Auth", tkn);
             ctx.redirect("/Dashboard?" + id);
