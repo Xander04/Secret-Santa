@@ -1,11 +1,7 @@
 package com.santa;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.HashMap;
 
 import static com.santa.DBManager.Authenticate;
@@ -14,7 +10,6 @@ import static com.santa.DBManager.ValidateEventID;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SslPlugin;
-import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 
 public class Main {
