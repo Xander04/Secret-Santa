@@ -25,6 +25,7 @@ public class Report implements Handler{
             <title>Secret Santa | Report</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
             <script src="script.js"></script> 
+            <link rel="icon" type="image/x-icon" href="logo.png">
         </head>
         <body>
             <div class = 'container'>

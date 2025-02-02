@@ -12,6 +12,7 @@ public class Register implements Handler {
         <head>
             <title>Secret Santa | Register Event</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
+            <link rel="icon" type="image/x-icon" href="logo.png">
         </head>
         <body>
             <form method="post" action="/register" enctype="multipart/form-data">

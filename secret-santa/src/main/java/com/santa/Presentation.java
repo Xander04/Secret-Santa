@@ -19,6 +19,7 @@ public class Presentation implements Handler{
             <title>Secret Santa | Register Event</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
             <script src="presentation.js"></script> 
+            <link rel="icon" type="image/x-icon" href="logo.png">
         </head>
         <body onload="main(%s)">
             <div id="pres_container" >

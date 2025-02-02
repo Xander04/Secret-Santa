@@ -13,6 +13,7 @@ public class Index implements Handler{
         <head>
             <title>Secret Santa | Home</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
+            <link rel="icon" type="image/x-icon" href="logo.png">
         </head>
         <body>
             <form method="post" action="/" enctype="multipart/form-data">
