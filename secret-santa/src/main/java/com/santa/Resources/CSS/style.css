@@ -294,9 +294,72 @@
     width: 100%;
  }
 
+ .deleteButton {
+  background-color: red;
+  width: fit-content;
+  font-weight: bold;
+ }
+ td.deleteButton {
+  width:1px;
+ }
+ td.ShowHide {
+  width: 1px;
+ }
+ td.ShowHide > button {
+  width: 100%;
+ }
+
+ .deleteButton {
+  background-color: red;
+  width: fit-content;
+  font-weight: bold;
+ }
+ td.deleteButton {
+  width:1px;
+ }
+ td.ShowHide {
+  width: 1px;
+ }
+ td.ShowHide > button {
+  width: 100%;
+ }
+
 
   
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
+  }
+
+  button#name_from {
+    display:inline-block;
+    transform: rotate(90deg);
+    transition: transform 0.75s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 1s;
+    
+  }
+
+  .shown {
+    background: none;
+    border: none;
+    opacity: 0;
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+    }
+    1000% {
+      opacity: 0;
+    }
   }

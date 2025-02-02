@@ -16,7 +16,7 @@ public class Participant implements Handler {
         <!DOCTYPE html>
         <head>
             <title>Secret Santa | Submit Gift</title>
-            <link rel='stylesheet' type='text/css' href='CSS\style.css' />
+            <link rel='stylesheet' type='text/css' href='style.css' />
         </head>
         <body>
             <h1> %s </h1>
@@ -28,7 +28,7 @@ public class Participant implements Handler {
                 <label for="RecieverName"> Recipients Name: </label><br>
                 <input type="text" name="RecieverName"><br>
                 <label for="GiftDescription"> Description of gift wrapping: </label><br>
-                <input type="text" name="GiftDescription"><br>
+                <textarea type="long-text" name="GiftDescription"></textarea><br>
                 <button>Submit</button><br>
             </form>
         </body>

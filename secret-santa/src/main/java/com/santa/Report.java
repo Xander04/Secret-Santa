@@ -15,9 +15,7 @@ public class Report implements Handler{
     public void handle(Context context) throws Exception {
         String id = context.queryString();
 
-        if (!DBManager.AuthVerify(context.cookie("Auth")).equals(id)) {
-            context.redirect("/");
-        }
+        Helper.Authenticate(context);
 
         ArrayList<Integer> gifts = GiftsFromEvent(id);
         String html = "";
@@ -36,40 +34,56 @@ public class Report implements Handler{
                     <a><div class = 'sidenav-item'> <h2> Report </h2> </div> </a>
                     <a><div class = 'sidenav-item'> <h2> Present </h2> </div> </a>
                 </div>
-        """, id);
-        html += """
                 <div class = 'header'> 
                     <center>
                     <h1> Gift Report </h1>
                     </center>
                 </div>
                 <div class = 'content'>
+        """, id);
+        if (!gifts.isEmpty()) {
+        html += """
                         <table id = "report">
                             <tr>
+                                <th></th>
                                 <th> Sender </th>
                                 <th> Recipient </th>
                                 <th> Description </th>
+                                <th></th>
                             </tr>
 
                             """;
         for (int i = 0; i < gifts.size(); i++) {
             HashMap<String, String> giftInfo = readGift(Integer.toString(gifts.get(i)));
             html += String.format("""
-                    <tr>
+                    <tr id="%s">
+                        <td class="ShowHide">
+                            <button onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
+                            <button onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
+                        </td>
                         <td> 
-                        <button onclick="displayText(%s)" id="%sa" style="display: block">Reveal</button>
-                        <button onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
-                            <div id="%s" style="display: none;">
+                            <div id="%sc" style="display: none;">
                             %s
                             </div> 
                         </td>
                         <td> %s </td>
                         <td> %s </td>
+                        <td class="deleteButton"> <button class="deleteButton" onclick="deleteEvent(%s, %s)"> &#128465 </button> </td>
                     </tr>
-                    """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"));
+                    """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"), giftInfo.get("EventID"), giftInfo.get("GiftID"));
         }
         html += """
                     </table>
+                    """;
+                            
+    }
+    else {
+        html += """
+                <h2> No Gifts Yet! </h3> <br>
+                <h3> Spread the word and have participants register their gifts </h3>
+                """;
+    }
+    html += """
                 </div>
             </div>
         </body>

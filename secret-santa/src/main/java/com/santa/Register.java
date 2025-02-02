@@ -11,7 +11,7 @@ public class Register implements Handler {
         <!DOCTYPE html>
         <head>
             <title>Secret Santa | Register Event</title>
-            <link rel='stylesheet' type='text/css' href='CSS\style.css' />
+            <link rel='stylesheet' type='text/css' href='style.css' />
         </head>
         <body>
             <form method="post" action="/register" enctype="multipart/form-data">
