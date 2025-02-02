@@ -10,15 +10,17 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 
 public class Helper {
-    public static void Authenticate(Context context) {
+    public static boolean Authenticate(Context context) {
         String id = context.queryString();
         HttpStatus response;
         String tkn = DBManager.AuthVerify(context.cookie("Auth"));
+        boolean authorised = false;
         if (tkn == null) {
             response = HttpStatus.NETWORK_AUTHENTICATION_REQUIRED;
         }
         else if (tkn.equals(id)){
             response = HttpStatus.OK;
+            authorised = true;
         }
         else if (!tkn.equals(id)){
             response = HttpStatus.FORBIDDEN;
@@ -27,6 +29,7 @@ public class Helper {
             response = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         context.status(response);
+        return authorised;
     }
 
 

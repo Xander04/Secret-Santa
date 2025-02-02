@@ -44,26 +44,24 @@ public class Main {
                         conf.insecurePort = JAVALIN_PORT;
                         conf.securePort = SSL_PORT;
                         conf.sniHostCheck = false; //! Enable after testing
-                    }); 
+                    });
                     config.registerPlugin(plugin);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.err.println("Unable to start SSL. Have you generated a certificate?");
                     System.err.println(e);
                 }
             }
         }).start(JAVALIN_PORT)
-            // Set handling for errors
-            .error(HttpStatus.NOT_FOUND, ctx -> ctx.html("Page not found!"))
-            .error(HttpStatus.FORBIDDEN, ctx -> {
-                ctx.html("<script>alert('You do not have access to this page') </script>");
-                ctx.redirect("/");
-
-            })
-            .error(HttpStatus.INTERNAL_SERVER_ERROR, ctx -> ctx.html("Internal Server Error"))
-        ;
+                // Set handling for errors
+                .error(HttpStatus.NOT_FOUND, ctx -> ctx.html("Page not found!"))
+                .error(HttpStatus.FORBIDDEN, ctx -> {
+                    ctx.html("<script>alert('You do not have access to this page') </script>");
+                    ctx.redirect("/");
+                })
+                .error(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED, ctx -> ctx.redirect("/"))
+                .error(HttpStatus.INTERNAL_SERVER_ERROR, ctx -> ctx.html("Internal Server Error"));
         configureRoutes(app);
-        
+
         // Start housekeeping thread
         Thread housekeeper = new Elf();
         housekeeper.start();
@@ -79,7 +77,7 @@ public class Main {
         app.get("/register", new Register());
         app.get("/report", new Report());
         app.get("/presentation", new Presentation());
-        
+
         app.get("/presentation-data", ctx -> {
             String id = ctx.queryString();
 
@@ -110,16 +108,15 @@ public class Main {
             data.put("SenderName", ctx.formParam("SenderName"));
             data.put("RecieverName", ctx.formParam("RecieverName"));
             data.put("GiftDescription", ctx.formParam("GiftDescription"));
-            
+
             if (ValidateEventID(data.get("EventID"))) {
                 DBManager.InsertGift(data);
 
                 ctx.html("Done!");
-            }
-            else{
+            } else {
                 ctx.html("Event Not Found!");
             }
-            
+
         });
         app.post("/login", ctx -> {
             String EventId = ctx.formParam("EventId");
@@ -131,8 +128,7 @@ public class Main {
                 InsertToken(EventId, tkn);
                 ctx.cookie("Auth", tkn);
                 ctx.redirect("/Dashboard?" + EventId);
-            }
-            else {
+            } else {
                 ctx.status(HttpStatus.FORBIDDEN);
             }
         });
@@ -145,9 +141,9 @@ public class Main {
                 data.put("CreationDate", Instant.now().toString());
                 String id = String.format("%04d", secureRandom.nextInt(9999));
                 Instant startTime = Instant.now();
-                while (ValidateEventID(id)){
+                while (ValidateEventID(id)) {
                     id = String.format("%04d", secureRandom.nextInt(9999));
-                    if(ChronoUnit.MINUTES.between(startTime, Instant.now()) >= 2) {
+                    if (ChronoUnit.MINUTES.between(startTime, Instant.now()) >= 2) {
                         throw new TimeoutException();
                     }
                 }
@@ -162,12 +158,10 @@ public class Main {
                 InsertToken(id, tkn);
                 ctx.cookie("Auth", tkn);
                 ctx.redirect("/Dashboard?" + id);
-            }
-            catch (TimeoutException e) {
+            } catch (TimeoutException e) {
                 ctx.status(HttpStatus.LOOP_DETECTED);
-                
+
             }
-            
 
         });
 
@@ -176,11 +170,10 @@ public class Main {
             System.out.println("delete" + ctx.header("EventId"));
             System.out.println("auth: " + ctx.cookie("Auth"));
             String eventId = DBManager.AuthVerify(ctx.cookie("Auth"));
-            if(eventId != null && eventId.equals(ctx.header("EventId"))) {
+            if (eventId != null && eventId.equals(ctx.header("EventId"))) {
                 DBManager.deleteGift(ctx.header("GiftId"));
                 ctx.status(HttpStatus.OK);
-            }
-            else {
+            } else {
                 System.err.printf("""
                     Invalid auth to delete gift: 
                         Auth: %s
