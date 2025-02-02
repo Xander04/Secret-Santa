@@ -2,7 +2,9 @@ package com.santa;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 import static com.santa.DBManager.Authenticate;
 import static com.santa.DBManager.InsertToken;
@@ -58,8 +60,8 @@ public class Main {
         ;
         configureRoutes(app);
 
-        //Thread housekeeper = new Elf();
-       // housekeeper.start();
+        Thread housekeeper = new Elf();
+        housekeeper.start();
 
     }
 
@@ -117,7 +119,7 @@ public class Main {
             String EventId = ctx.formParam("EventId");
             String hashstr = Helper.getPwHash(ctx);
             if (Authenticate(EventId, hashstr)) {
-                ctx.html("Success");
+                ctx.status(HttpStatus.OK);
                 System.out.println(ctx.formParam("tokenise"));
                 String tkn = Helper.generateNewToken();
                 InsertToken(EventId, tkn);
@@ -125,30 +127,41 @@ public class Main {
                 ctx.redirect("/Dashboard?" + EventId);
             }
             else {
-                ctx.html("Login failure");
+                ctx.status(HttpStatus.FORBIDDEN);
             }
         });
         app.post("/register", ctx -> {
-            final SecureRandom secureRandom = new SecureRandom();
-            HashMap<String, String> data = new HashMap<>();
-            data.put("EventName", ctx.formParam("EventName"));
-            data.put("EventDescription", ctx.formParam("EventDescription"));
-            data.put("CreationDate", Instant.now().toString());
-            String id = String.format("%04d", secureRandom.nextInt(9999));
-            while (ValidateEventID(id)){
-                id = String.format("%04d", secureRandom.nextInt(9999));
+            try {
+                final SecureRandom secureRandom = new SecureRandom();
+                HashMap<String, String> data = new HashMap<>();
+                data.put("EventName", ctx.formParam("EventName"));
+                data.put("EventDescription", ctx.formParam("EventDescription"));
+                data.put("CreationDate", Instant.now().toString());
+                String id = String.format("%04d", secureRandom.nextInt(9999));
+                Instant startTime = Instant.now();
+                while (ValidateEventID(id)){
+                    id = String.format("%04d", secureRandom.nextInt(9999));
+                    if(ChronoUnit.MINUTES.between(startTime, Instant.now()) >= 2) {
+                        throw new TimeoutException();
+                    }
+                }
+                data.put("EventID", id);
+                DBManager.InsertEvent(data);
+
+                String hashstr = Helper.getPwHash(ctx);
+
+                DBManager.InsertAuth(id, hashstr);
+
+                String tkn = Helper.generateNewToken();
+                InsertToken(id, tkn);
+                ctx.cookie("Auth", tkn);
+                ctx.redirect("/Dashboard?" + id);
             }
-            data.put("EventID", id);
-            DBManager.InsertEvent(data);
-
-            String hashstr = Helper.getPwHash(ctx);
-
-            DBManager.InsertAuth(id, hashstr);
-
-            String tkn = Helper.generateNewToken();
-            InsertToken(id, tkn);
-            ctx.cookie("Auth", tkn);
-            ctx.redirect("/Dashboard?" + id);
+            catch (TimeoutException e) {
+                ctx.status(HttpStatus.LOOP_DETECTED);
+                
+            }
+            
 
         });
         app.delete("/report", ctx -> {
