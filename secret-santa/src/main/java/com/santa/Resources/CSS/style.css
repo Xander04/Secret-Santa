@@ -120,6 +120,18 @@
     background-color:#ebf8e8;
     display:flex;
     justify-content:center;
+  }
+  .Event_Selection {
+    flex-basis: 50%;
+    background-color:#ebf8e8;
+    display:flex;
+    justify-content:center;
+    align-items: center;
+  }
+  .buffer {
+    flex-basis: 25%;
+    display:flex;
+    justify-content:center;
     align-items: center;
   }
 
