@@ -1,4 +1,4 @@
 secret-santa/Secret-Santa.code-workspace
 secret-santa/src/main/java/com/santa/Resources/SECURE/*
 secret-santa/target/*
-secret-santa/src/main/resources/db/secret-santa.db
+secret-santa/src/main/resources/db/*
