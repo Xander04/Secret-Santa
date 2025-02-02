@@ -33,6 +33,11 @@
             <artifactId>ssl-plugin</artifactId>
             <version>6.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20250107</version>
+        </dependency>
     </dependencies>
     
 

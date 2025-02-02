@@ -1,11 +1,7 @@
 package com.santa;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.HashMap;
 
 import static com.santa.DBManager.Authenticate;
@@ -14,7 +10,6 @@ import static com.santa.DBManager.ValidateEventID;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SslPlugin;
-import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 
 public class Main {
@@ -27,30 +22,6 @@ public class Main {
     public static final String IMG_DIR = "com/santa/Resources/IMG/";
     public static final String SSL_DIR = "secret-santa/src/main/java/com/santa/Resources/SECURE/";
     public static final boolean SSL_ENABLED = true;
-
-    private static final SecureRandom secureRandom = new SecureRandom();
-    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
-
-    public static String generateNewToken() {
-        byte[] randomBytes = new byte[64];
-        secureRandom.nextBytes(randomBytes);
-        return base64Encoder.encodeToString(randomBytes);
-    }
-    public static String getPwHash(Context ctx) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        String hashstr = "";
-        String EventPw = ctx.formParam("EventPw");
-        if (EventPw != null) {
-            byte[] hash = digest.digest(EventPw.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) {
-                sb.append(String.format("%X", b));
-            }
-            hashstr = sb.toString();
-        }
-            
-        return hashstr;
-    }
 
     public static void main(String[] args) {
 
@@ -76,7 +47,15 @@ public class Main {
                     System.err.println(e);
                 }
             }
-        }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!")).error(HttpStatus.FORBIDDEN, ctx -> ctx.redirect("/"));
+        }).start(JAVALIN_PORT)
+            .error(HttpStatus.NOT_FOUND, ctx -> ctx.html("Page not found!"))
+            .error(HttpStatus.FORBIDDEN, ctx -> {
+                ctx.html("<script>alert('You do not have access to this page') </script>");
+                ctx.redirect("/");
+
+            })
+            .error(HttpStatus.INTERNAL_SERVER_ERROR, ctx -> ctx.html("Internal Server Error"))
+        ;
         configureRoutes(app);
 
         Thread housekeeper = new Elf();
@@ -92,6 +71,19 @@ public class Main {
         app.get("/login", new Login());
         app.get("/register", new Register());
         app.get("/report", new Report());
+        app.get("/presentation", new Presentation());
+        
+        app.get("/presentation-data", ctx -> {
+            String id = ctx.queryString();
+
+        String tkn = DBManager.AuthVerify(ctx.cookie("Auth"));
+        if (tkn == null || !tkn.equals(id)) {
+            ctx.status(HttpStatus.FORBIDDEN);
+        }
+
+        ctx.header("giftContent", DBManager.getPresJson(id));
+        ctx.status(HttpStatus.OK);
+        });
 
         app.get("/logout", ctx -> {
             String tkn = ctx.cookie("Auth");
@@ -123,11 +115,11 @@ public class Main {
         });
         app.post("/login", ctx -> {
             String EventId = ctx.formParam("EventId");
-            String hashstr = getPwHash(ctx);
+            String hashstr = Helper.getPwHash(ctx);
             if (Authenticate(EventId, hashstr)) {
                 ctx.html("Success");
                 System.out.println(ctx.formParam("tokenise"));
-                String tkn = generateNewToken();
+                String tkn = Helper.generateNewToken();
                 InsertToken(EventId, tkn);
                 ctx.cookie("Auth", tkn);
                 ctx.redirect("/Dashboard?" + EventId);
@@ -137,6 +129,7 @@ public class Main {
             }
         });
         app.post("/register", ctx -> {
+            final SecureRandom secureRandom = new SecureRandom();
             HashMap<String, String> data = new HashMap<>();
             data.put("EventName", ctx.formParam("EventName"));
             data.put("EventDescription", ctx.formParam("EventDescription"));
@@ -148,11 +141,11 @@ public class Main {
             data.put("EventID", id);
             DBManager.InsertEvent(data);
 
-            String hashstr = getPwHash(ctx);
+            String hashstr = Helper.getPwHash(ctx);
 
             DBManager.InsertAuth(id, hashstr);
 
-            String tkn = generateNewToken();
+            String tkn = Helper.generateNewToken();
             InsertToken(id, tkn);
             ctx.cookie("Auth", tkn);
             ctx.redirect("/Dashboard?" + id);
