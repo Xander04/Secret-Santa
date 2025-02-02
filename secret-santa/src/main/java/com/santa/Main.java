@@ -16,6 +16,7 @@ import io.javalin.http.HttpStatus;
 
 public class Main {
 
+    // Config
     public static final int JAVALIN_PORT = 80;
     public static final int SSL_PORT = 443;
     public static final String HOSTNAME = "127.0.0.1";
@@ -28,10 +29,12 @@ public class Main {
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
+            // Add static files
             config.staticFiles.add(CSS_DIR);
             config.staticFiles.add(JS_DIR);
             config.staticFiles.add(IMG_DIR);
 
+            // Configure SSL
             if (SSL_ENABLED) {
                 try {
                     SslPlugin plugin = new SslPlugin(conf -> {
@@ -50,6 +53,7 @@ public class Main {
                 }
             }
         }).start(JAVALIN_PORT)
+            // Set handling for errors
             .error(HttpStatus.NOT_FOUND, ctx -> ctx.html("Page not found!"))
             .error(HttpStatus.FORBIDDEN, ctx -> {
                 ctx.html("<script>alert('You do not have access to this page') </script>");
@@ -59,14 +63,15 @@ public class Main {
             .error(HttpStatus.INTERNAL_SERVER_ERROR, ctx -> ctx.html("Internal Server Error"))
         ;
         configureRoutes(app);
-
+        
+        // Start housekeeping thread
         Thread housekeeper = new Elf();
         housekeeper.start();
 
     }
 
     public static void configureRoutes(Javalin app) {
-        // All webpages are listed here as GET pages
+        // Configure GET routes
         app.get("/", new Index());
         app.get("/Dashboard", new Dashboard());
         app.get("/Participant", new Participant());         //?Rename
@@ -78,13 +83,13 @@ public class Main {
         app.get("/presentation-data", ctx -> {
             String id = ctx.queryString();
 
-        String tkn = DBManager.AuthVerify(ctx.cookie("Auth"));
-        if (tkn == null || !tkn.equals(id)) {
-            ctx.status(HttpStatus.FORBIDDEN);
-        }
+            String tkn = DBManager.AuthVerify(ctx.cookie("Auth"));
+            if (tkn == null || !tkn.equals(id)) {
+                ctx.status(HttpStatus.FORBIDDEN);
+            }
 
-        ctx.header("giftContent", DBManager.getPresJson(id));
-        ctx.status(HttpStatus.OK);
+            ctx.header("giftContent", DBManager.getPresJson(id));
+            ctx.status(HttpStatus.OK);
         });
 
         app.get("/logout", ctx -> {
@@ -94,6 +99,7 @@ public class Main {
             ctx.redirect("/");
         });
 
+        // Configure post routes
         app.post("/", ctx -> {
             String url = "/Participant?" + ctx.formParam("EventId");
             ctx.redirect(url);
@@ -164,6 +170,8 @@ public class Main {
             
 
         });
+
+        // Configure delete routes
         app.delete("/report", ctx -> {
             System.out.println("delete" + ctx.header("EventId"));
             System.out.println("auth: " + ctx.cookie("Auth"));
