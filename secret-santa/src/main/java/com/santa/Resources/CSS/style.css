@@ -128,6 +128,12 @@
     justify-content:center;
     align-items: center;
   }
+  @media screen and (max-width: 800px) {
+    .login_left, .login_right {
+      flex-basis: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+      height:50%;
+    }
+  }
   .buffer {
     flex-basis: 25%;
     display:flex;
@@ -166,6 +172,11 @@
     max-width:65%;
     flex-shrink: 1;
     height:9.4vh;
+  }
+  @media screen and (max-width: 800px) {
+    .headSpace, .titleHolder {
+      flex-basis: 20%; /* The width is 100%, when the viewport is 800px or smaller */
+    }
   }
 
   .dropdown-content {

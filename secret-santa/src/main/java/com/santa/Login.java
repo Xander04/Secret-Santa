@@ -16,6 +16,7 @@ public class Login implements Handler {
             <link rel='stylesheet' type='text/css' href='style.css' />
             <link rel="icon" type="image/x-icon" href="logo.png">
             <script type="text/javascript" src="script.js"></script>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
             <div class="head1">
             <img src="logo.png" class="logo" width=75px>
             <div class="titleHolder">
