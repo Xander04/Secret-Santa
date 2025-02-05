@@ -98,10 +98,6 @@ public class Main {
         });
 
         // Configure post routes
-        app.post("/", ctx -> {
-            String url = "/Participant?" + ctx.formParam("EventId");
-            ctx.redirect(url);
-        });
         app.post("/Participant", ctx -> {
             HashMap<String, String> data = new HashMap<>();
             data.put("EventID", ctx.formParam("EventID"));
