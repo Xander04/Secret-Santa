@@ -17,8 +17,8 @@ import io.javalin.http.HttpStatus;
 public class Main {
 
     // Config
-    public static final int JAVALIN_PORT = 80;
-    public static final int SSL_PORT = 443;
+    public static final int JAVALIN_PORT = 8080;
+    public static final int SSL_PORT = 4430;
     public static final String HOSTNAME = "127.0.0.1";
     public static final String CSS_DIR = "com/santa/Resources/CSS/";
     public static final String JS_DIR = "com/santa/Resources/JS/";
