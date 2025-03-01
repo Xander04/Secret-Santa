@@ -393,3 +393,8 @@
       opacity: 0;
     }
   }
+
+  .EventIdInput {
+    display: inline-block;
+    width:min-content;
+  }
