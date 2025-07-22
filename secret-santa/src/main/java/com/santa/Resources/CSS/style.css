@@ -388,6 +388,22 @@
   }
 
   .EventIdInput {
-    display: inline-block;
-    width:min-content;
+    display: inline-flex;
+    width: 3ch;
+    
   }
+  .formstyle {
+    display: flex;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

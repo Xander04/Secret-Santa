@@ -41,13 +41,12 @@ public class Index implements Handler{
             <aside class="Event_Selection" id = "Log in">
 
                 <div class="formstyle">
-                        <input type="number" id="EventId1" class="EventIdInput" name="EventId" maxlength="1"><br>
-                        <input type="number" id="EventId2" class="EventIdInput" name="EventId" maxlength="1"><br>
-                        <input type="number" id="EventId3" class="EventIdInput" name="EventId" maxlength="1"><br>
-                        <input type="number" id="EventId4" class="EventIdInput" name="EventId" maxlength="1"><br>
-                        <button onclick="submitEventId()">Submit</button><br>
-                    </form>
+                        <input type="text" id="EventId1" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');" onkeyup="">
+                        <input type="text" id="EventId2" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
+                        <input type="text" id="EventId3" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
+                        <input type="text" id="EventId4" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
                 </div>
+                <button onclick="submitEventId()">Submit</button><br>
             </aside>
             <aside class="buffer"></aside>
             
