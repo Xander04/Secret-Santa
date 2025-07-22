@@ -16,6 +16,7 @@ import io.javalin.Javalin;
 public class Main {
 
     public static final int JAVALIN_PORT = 8080;
+    public static final String JAVALIN_HOST = "192.168.1.100";
     public static final String CSS_DIR = "com/santa/Resources/CSS/";
     public static final String JS_DIR = "com/santa/Resources/JS/";
     public static final String IMG_DIR = "com/santa/Resources/IMG/";
@@ -35,7 +36,7 @@ public class Main {
             config.staticFiles.add(CSS_DIR);
             config.staticFiles.add(JS_DIR);
             config.staticFiles.add(IMG_DIR);
-        }).start(JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
+        }).start(JAVALIN_HOST, JAVALIN_PORT).error(404, config -> config.html("Page not found!"));
         configureRoutes(app);
 
         Thread housekeeper = new Elf();
