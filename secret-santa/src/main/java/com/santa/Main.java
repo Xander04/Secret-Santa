@@ -16,14 +16,13 @@ import io.javalin.http.HttpStatus;
 
 public class Main {
 
-    // Config
     public static final int JAVALIN_PORT = 8080;
     public static final int SSL_PORT = 4430;
-    public static final String HOSTNAME = "127.0.0.1";
+    public static final String HOSTNAME = "192.168.1.100";
     public static final String CSS_DIR = "com/santa/Resources/CSS/";
     public static final String JS_DIR = "com/santa/Resources/JS/";
     public static final String IMG_DIR = "com/santa/Resources/IMG/";
-    public static final String SSL_DIR = "secret-santa/src/main/java/com/santa/Resources/SECURE/";
+    public static final String SSL_DIR = "SECURE/";
     public static final boolean SSL_ENABLED = true;
 
     public static void main(String[] args) {
@@ -38,13 +37,13 @@ public class Main {
             if (SSL_ENABLED) {
                 try {
                     SslPlugin plugin = new SslPlugin(conf -> {
-                        conf.pemFromPath(SSL_DIR + "certificate.pem", SSL_DIR + "privateKey.pem");
-                        conf.host = HOSTNAME;
+                        conf.pemFromClasspath(SSL_DIR + "fullchain1.pem", SSL_DIR + "privkey1.pem");
                         conf.redirect = true;
                         conf.insecurePort = JAVALIN_PORT;
                         conf.securePort = SSL_PORT;
-                        conf.sniHostCheck = false; //! Enable after testing
-                    });
+                        conf.host = HOSTNAME;
+                        conf.sniHostCheck = true; //! Enable after testing
+                    }); 
                     config.registerPlugin(plugin);
                 } catch (Exception e) {
                     System.err.println("Unable to start SSL. Have you generated a certificate?");
