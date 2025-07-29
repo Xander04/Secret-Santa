@@ -18,7 +18,7 @@ public class Index implements Handler{
             <script type="text/javascript" src="index.js"></script>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
             <div class="head1">
-            <img src="logo.png" class="logo" width=75px>
+            <a href="/"><img src="logo.png" class="logo" width=75px></a>
             <div class="titleHolder">
             <h1 class="pageTitle">MachineCode Secret Santa</h1>
             </div>
@@ -43,12 +43,12 @@ public class Index implements Handler{
 
                 <div class="formstyle">
                     <form method="get" action="/Participant" enctype="multipart/form-data">
-                        <h1 class="loginTitle"> Log in </h1>
+                        <h1 class="loginTitle"> Register A Gift </h1>
                         <div class="loginBreak1"> </div>
                         <label for="EventId"> Enter event code </label><br>
                         <input type="text" name="EventId" maxlength="4" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');"><br>
                         <div class="loginBreak2"> </div>
-                        <button onclick="submitEventId()" class="EventIdInput" style="width: 100%; ">Submit</button><br>
+                        <button onclick="submitEventId()" class="EventIdInput" style="width: 100%; "><center>Submit</center></button><br>
                     </form>
                 </div>
             </aside>

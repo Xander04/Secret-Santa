@@ -10,12 +10,10 @@ public class Participant implements Handler {
     @Override
     public void handle(Context context) throws Exception {
         String id = context.queryParam("EventId");
-        System.out.println(id);
         HashMap<String, String> details = DBManager.getEventSummary(id);
         if (id == "" || details.get("EventName") == null) {
             context.redirect("/");
         }
-        System.out.println(details.get("EventName") == null);
         String html = "";
         html += String.format("""
         <!DOCTYPE html>

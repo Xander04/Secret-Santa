@@ -18,7 +18,7 @@ public class Login implements Handler {
             <script type="text/javascript" src="script.js"></script>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
             <div class="head1">
-            <img src="logo.png" class="logo" width=75px>
+            <a href="/"><img src="logo.png" class="logo" width=75px></a>
             <div class="titleHolder">
             <h1 class="pageTitle">MachineCode Secret Santa</h1>
             </div>
@@ -40,7 +40,6 @@ public class Login implements Handler {
         <body>
 
             <aside class="login_left" id = "Log in">
-
                 <div class="formstyle">
                     <form method="post" action="/login" enctype="multipart/form-data">
                         <h1 class="loginTitle"> Log in </h1>

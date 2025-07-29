@@ -126,9 +126,11 @@
 
   .login_left {
     flex-basis: 50%;
+    height:80vh;
     background-color:#ebf8e8;
     display:flex;
     justify-content:center;
+    align-items: center;
   }
   .Event_Selection {
     flex-basis: 50%;
@@ -404,9 +406,9 @@
   }
 
   .EventIdInput {
-    display: flex;
-    width: 20%;
-    align-content: center;
+    /*display: flex;
+    width: 20%;*/
+    text-align: center;
     
   }
   .formstyle {
