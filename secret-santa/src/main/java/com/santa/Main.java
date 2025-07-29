@@ -1,32 +1,58 @@
 package com.santa;
 
+import static com.santa.DBManager.Authenticate;
+import static com.santa.DBManager.InsertToken;
+import static com.santa.DBManager.ValidateEventID;
+
+import java.io.FileReader;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
-import static com.santa.DBManager.Authenticate;
-import static com.santa.DBManager.InsertToken;
-import static com.santa.DBManager.ValidateEventID;
+import org.json.JSONObject;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SslPlugin;
 import io.javalin.http.HttpStatus;
 
-public class Main {
 
-    // Config
-    public static final int JAVALIN_PORT = 80;
-    public static final int SSL_PORT = 443;
-    public static final String HOSTNAME = "127.0.0.1";
+
+public class Main {
     public static final String CSS_DIR = "com/santa/Resources/CSS/";
     public static final String JS_DIR = "com/santa/Resources/JS/";
     public static final String IMG_DIR = "com/santa/Resources/IMG/";
-    public static final String SSL_DIR = "secret-santa/src/main/java/com/santa/Resources/SECURE/";
-    public static final boolean SSL_ENABLED = true;
 
     public static void main(String[] args) {
+        JSONObject serv_config;
+        try{
+            Scanner scr = new Scanner(new FileReader("config.json"));
+            scr.useDelimiter("\\A");
+            serv_config = new JSONObject(scr.next());
+            scr.close();
+
+        }
+        catch(Exception e) {
+            System.err.println("config not found, using default config");
+            serv_config = new JSONObject("""
+                    {
+                        "hostname" : "127.0.0.1",
+                        "http_port" : 8080,
+                        "ssl_enabled" : false,
+                        "ssl_port" : 4430,
+                        "ssl_cert_dir" : ""
+                    }
+                    """);
+        }
+
+        final int JAVALIN_PORT = serv_config.getInt("http_port");
+        final int SSL_PORT = serv_config.getInt("ssl_port");
+        final String HOSTNAME = serv_config.getString("hostname");
+        final String SSL_DIR = serv_config.getString("ssl_cert_dir");
+        final boolean SSL_ENABLED = serv_config.getBoolean("ssl_enabled");
+
 
         Javalin app = Javalin.create(config -> {
             // Add static files
@@ -38,13 +64,13 @@ public class Main {
             if (SSL_ENABLED) {
                 try {
                     SslPlugin plugin = new SslPlugin(conf -> {
-                        conf.pemFromPath(SSL_DIR + "certificate.pem", SSL_DIR + "privateKey.pem");
-                        conf.host = HOSTNAME;
+                        conf.pemFromPath(SSL_DIR + "fullchain.pem", SSL_DIR + "privkey.pem");
                         conf.redirect = true;
                         conf.insecurePort = JAVALIN_PORT;
                         conf.securePort = SSL_PORT;
-                        conf.sniHostCheck = false; //! Enable after testing
-                    });
+                        conf.host = HOSTNAME;
+                        conf.sniHostCheck = true; //! Enable after testing
+                    }); 
                     config.registerPlugin(plugin);
                 } catch (Exception e) {
                     System.err.println("Unable to start SSL. Have you generated a certificate?");
@@ -98,10 +124,6 @@ public class Main {
         });
 
         // Configure post routes
-        app.post("/", ctx -> {
-            String url = "/Participant?" + ctx.formParam("EventId");
-            ctx.redirect(url);
-        });
         app.post("/Participant", ctx -> {
             HashMap<String, String> data = new HashMap<>();
             data.put("EventID", ctx.formParam("EventID"));

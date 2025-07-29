@@ -15,6 +15,7 @@ public class Index implements Handler{
             <link rel='stylesheet' type='text/css' href='style.css' />
             <link rel="icon" type="image/x-icon" href="logo.png">
             <script type="text/javascript" src="script.js"></script>
+            <script src="index.js"></script> 
         </head>
         <body>
             <div class="head1">
@@ -40,12 +41,12 @@ public class Index implements Handler{
             <aside class="Event_Selection" id = "Log in">
 
                 <div class="formstyle">
-                    <form method="post" action="/" enctype="multipart/form-data">
-                        <label for="EventId"> Enter Event Code: </label><br>
-                        <input type="text" name="EventId" maxlength="4"><br>
-                        <button>Submit</button><br>
-                    </form>
+                        <input type="text" id="EventId1" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');" onkeyup="">
+                        <input type="text" id="EventId2" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
+                        <input type="text" id="EventId3" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
+                        <input type="text" id="EventId4" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
                 </div>
+                <button onclick="submitEventId()">Submit</button><br>
             </aside>
             <aside class="buffer"></aside>
             
