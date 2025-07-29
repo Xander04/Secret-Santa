@@ -378,6 +378,9 @@
   width: 100%;
  }
 
+ form.report {
+  width: 100%;
+ }
 
   
   @media screen and (max-height: 450px) {
@@ -426,6 +429,10 @@
   }
   .formstyle {
     display: flex;
+  }
+  .formstyle.report {
+    flex-basis: 50%;
+    justify-content: center
   }
 
   /* Chrome, Safari, Edge, Opera */

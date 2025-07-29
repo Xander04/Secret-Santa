@@ -61,8 +61,8 @@ public class Report implements Handler{
         <body>
 
             <aside class="index" id = "Log in">
-            <div class="formstyle">
-            <form>
+            <div class="formstyle report">
+            <form class="report">
                         <center><h1>Gift Count: %s</h1><br></center>
                         <div class="loginBreak2"> </div>
                             <center>
@@ -74,7 +74,6 @@ public class Report implements Handler{
                 html += """
                                 <table id = "report">
                                     <tr>
-                                        <th></th>
                                         <th> Sender </th>
                                         <th> Recipient </th>
                                         <th> Description </th>
@@ -87,19 +86,14 @@ public class Report implements Handler{
                     html += String.format("""
                             <tr id="%s">
                                 <td class="ShowHide">
-                                    <button type="button" onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
-                                    <button type="button" onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
-                                </td>
-                                <td> 
-                                    <div id="%sc" style="display: none;">
-                                    %s
-                                    </div> 
+                                    <button type="button" onclick="displayText(%s)" id="%sa" style="display: inline-block">&#x1F441;</button>
+                                    <button type="button" onclick="hideText(%s)" id="%sb" style="display: none"><s>&#x1F441;</s> %s</button>
                                 </td>
                                 <td> %s </td>
                                 <td> %s </td>
                                 <td class="deleteButton"> <button type="button"  class="deleteButton" onclick="deleteEvent(%s, %s)">&#128465</button> </td>
                             </tr>
-                            """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"), giftInfo.get("EventID"), giftInfo.get("GiftID"));
+                            """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"), giftInfo.get("EventID"), giftInfo.get("GiftID"));
                 }
                 html += """
                             </table>
