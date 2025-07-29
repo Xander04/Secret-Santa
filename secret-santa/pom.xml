@@ -30,6 +30,7 @@
 
     <dependencies>
 
+
         <dependency>
             <groupId>io.javalin.community.ssl</groupId>
             <artifactId>ssl-plugin</artifactId>
