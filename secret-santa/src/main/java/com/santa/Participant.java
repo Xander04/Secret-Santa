@@ -17,6 +17,7 @@ public class Participant implements Handler {
         <head>
             <title>Secret Santa | Submit Gift</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
+            <link rel="icon" type="image/x-icon" href="logo.png">
         </head>
         <body>
             <h1> %s </h1>
