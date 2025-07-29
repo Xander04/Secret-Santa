@@ -9,15 +9,14 @@ public class Index implements Handler{
     public void handle(Context context) throws Exception {
         String html = "";
         html += """
-        <!DOCTYPE html>
+    <!DOCTYPE html>
         <head>
-            <title>Secret Santa | Home</title>
+            <title>Secret Santa | Login</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
             <link rel="icon" type="image/x-icon" href="logo.png">
             <script type="text/javascript" src="script.js"></script>
-            <script src="index.js"></script> 
-        </head>
-        <body>
+            <script type="text/javascript" src="index.js"></script>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
             <div class="head1">
             <img src="logo.png" class="logo" width=75px>
             <div class="titleHolder">
@@ -37,23 +36,27 @@ public class Index implements Handler{
             </div>
             <div class="head_line">
             </div>
-            <aside class="buffer"></aside>
-            <aside class="Event_Selection" id = "Log in">
+        </head>
+        <body>
+
+            <aside class="index" id = "Log in">
 
                 <div class="formstyle">
-                        <input type="text" id="EventId1" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');" onkeyup="">
-                        <input type="text" id="EventId2" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
-                        <input type="text" id="EventId3" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
-                        <input type="text" id="EventId4" class="EventIdInput" name="EventId" maxlength="1" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');">
+                    <form method="get" action="/Participant" enctype="multipart/form-data">
+                        <h1 class="loginTitle"> Log in </h1>
+                        <div class="loginBreak1"> </div>
+                        <label for="EventId"> Enter event code </label><br>
+                        <input type="text" name="EventId" maxlength="4" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\\..*)\\./g, '$1');"><br>
+                        <div class="loginBreak2"> </div>
+                        <button onclick="submitEventId()" class="EventIdInput" style="width: 100%; ">Submit</button><br>
+                    </form>
                 </div>
-                <button onclick="submitEventId()">Submit</button><br>
             </aside>
-            <aside class="buffer"></aside>
-            
-            
+
+        
 
             <div class="foot1">
-                &copy; Xander Dundon 2025
+            &copy; Xander Dundon 2025
             </div>
         </body>
     </html>
