@@ -31,9 +31,11 @@ public class Main {
             Scanner scr = new Scanner(new FileReader("config.json"));
             scr.useDelimiter("\\A");
             serv_config = new JSONObject(scr.next());
+            scr.close();
 
         }
         catch(Exception e) {
+            System.err.println("config not found, using default config");
             serv_config = new JSONObject("""
                     {
                         "hostname" : "127.0.0.1",
@@ -62,7 +64,7 @@ public class Main {
             if (SSL_ENABLED) {
                 try {
                     SslPlugin plugin = new SslPlugin(conf -> {
-                        conf.pemFromClasspath(SSL_DIR + "fullchain1.pem", SSL_DIR + "privkey1.pem");
+                        conf.pemFromPath(SSL_DIR + "fullchain.pem", SSL_DIR + "privkey.pem");
                         conf.redirect = true;
                         conf.insecurePort = JAVALIN_PORT;
                         conf.securePort = SSL_PORT;
