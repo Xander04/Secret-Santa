@@ -55,6 +55,8 @@ function displayText(id) {
   function dropFunction() {
     document.getElementById("eventDrop").classList.toggle("show");
     document.getElementById("eventDrop1").classList.toggle("show");
+    document.getElementById("eventDrop2").classList.toggle("show");
+    document.getElementById("eventDrop3").classList.toggle("show");
   }
 
   window.onclick = function(event) {

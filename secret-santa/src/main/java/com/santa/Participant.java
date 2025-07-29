@@ -62,6 +62,7 @@ public class Participant implements Handler {
                         <input type="text" name="RecieverName"><br>
                         <label for="GiftDescription"> Description of gift wrapping: </label><br>
                         <textarea type="long-text" name="GiftDescription"></textarea><br>
+                        <div class="loginBreak2"> </div>
                         <button>Submit</button><br>
                     </form>
                 </div>

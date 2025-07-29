@@ -233,8 +233,32 @@
     border-color:white;
     margin-top:45px;
   }
+  .dropdown-content-2 {
+    display: none;
+    background-color: #ebf8e8;
+    position:absolute;
+    min-width: 160px;
+    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-style:solid;
+    border-width:2px;
+    border-color:white;
+    margin-top:90px;
+  }
+  .dropdown-content-3 {
+    display: none;
+    background-color: #ebf8e8;
+    position:absolute;
+    min-width: 160px;
+    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-style:solid;
+    border-width:2px;
+    border-color:white;
+    margin-top:135px;
+  }
 
-  .dropdown-content a, .dropdown-content-1 a {
+  .dropdown-content a, .dropdown-content-1 a , .dropdown-content-2 a , .dropdown-content-3 a{
     color: #97b891;
     padding: 12px 16px;
     text-decoration: none;
@@ -337,29 +361,18 @@
 
  .deleteButton {
   background-color: red;
-  width: fit-content;
+  width: fit-content + 2ch;
   font-weight: bold;
- }
- td.deleteButton {
-  width:1px;
- }
- td.ShowHide {
-  width: 1px;
+  text-align: center;
  }
  td.ShowHide > button {
-  width: 100%;
+  width: fit-content;
  }
 
  .deleteButton {
   background-color: red;
   width: fit-content;
   font-weight: bold;
- }
- td.deleteButton {
-  width:1px;
- }
- td.ShowHide {
-  width: 1px;
  }
  td.ShowHide > button {
   width: 100%;

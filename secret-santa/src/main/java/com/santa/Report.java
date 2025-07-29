@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.santa.DBManager.GiftsFromEvent;
+import static com.santa.DBManager.getEventSummary;
 import static com.santa.DBManager.readGift;
 
 import io.javalin.http.Context;
@@ -18,30 +19,57 @@ public class Report implements Handler{
         if (Helper.Authenticate(context)) {
 
             ArrayList<Integer> gifts = GiftsFromEvent(id);
+            HashMap<String, String> eventSummary = getEventSummary(id);
             String html = "";
             html += String.format("""
-            <!DOCTYPE html>
-                <head>
-                    <title>Secret Santa | Report</title>
-                    <link rel='stylesheet' type='text/css' href='style.css' />
-                    <script src="script.js"></script> 
-                    <link rel="icon" type="image/x-icon" href="logo.png">
-                </head>
-                <body>
-                    <div class = 'container'>
-                        <div class = 'sidenav'> 
-                            <a href = "/logout"><div class = 'sidenav-item'> <h2> Log Out </h2> </div> </a>
-                            <a href = "/Dashboard?%s"><div class = 'sidenav-item'> <h2> Summary </h2> </div> </a>
-                            <a><div class = 'sidenav-item'> <h2> Report </h2> </div> </a>
-                            <a><div class = 'sidenav-item'> <h2> Present </h2> </div> </a>
-                        </div>
-                        <div class = 'header'> 
+           <!DOCTYPE html>
+        <head>
+            <title>Secret Santa | Login</title>
+            <link rel='stylesheet' type='text/css' href='style.css' />
+            <link rel="icon" type="image/x-icon" href="logo.png">
+            <script type="text/javascript" src="script.js"></script>
+            <script type="text/javascript" src="index.js"></script>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+            <div class="head1">
+            <a href="/"><img src="logo.png" class="logo" width=75px></a>
+            <div class="titleHolder">
+            <h1 class="pageTitle">%s - %s</h1>
+            </div>
+            <div class="headSpace"> </div>
+                <div class="dropdown">
+                    <button onclick="dropFunction()" class="dropDown">Manage &#x25BC;</button>
+                    <div id="eventDrop" class="dropdown-content dropdown-content-el">
+                        <a href="/logout">Logout</a>
+                        <div class="dropdown-line"> </div>
+                    </div>
+                    <div id="eventDrop1" class="dropdown-content-1 dropdown-content-el">
+                        <a href="/login">Summary</a>
+                        <div class="dropdown-line"> </div>
+                    </div>
+                    <div id="eventDrop2" class="dropdown-content-2 dropdown-content-el">
+                        <a href="/report?%s">Report</a>
+                        <div class="dropdown-line"> </div>
+                    </div>
+                    <div id="eventDrop3" class="dropdown-content-3 dropdown-content-el">
+                        <a href="/presentation?%s">Present</a>
+                    </div>
+                </div>
+            </div>
+            <div class="head_line">
+            </div>
+        </head>
+        <body>
+
+            <aside class="index" id = "Log in">
+            <div class="formstyle">
+            <form>
+                        <center><h1>Gift Count: %s</h1><br></center>
+                        <div class="loginBreak2"> </div>
                             <center>
                             <h1> Gift Report </h1>
                             </center>
-                        </div>
-                        <div class = 'content'>
-                """, id);
+                            
+                """, eventSummary.get("EventName"), id, id, id, eventSummary.get("GiftCount"));
                 if (!gifts.isEmpty()) {
                 html += """
                                 <table id = "report">
@@ -59,8 +87,8 @@ public class Report implements Handler{
                     html += String.format("""
                             <tr id="%s">
                                 <td class="ShowHide">
-                                    <button onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
-                                    <button onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
+                                    <button type="button" onclick="displayText(%s)" id="%sa" style="display: inline-block">Reveal</button>
+                                    <button type="button" onclick="hideText(%s)" id="%sb" style="display: none">Hide</button>
                                 </td>
                                 <td> 
                                     <div id="%sc" style="display: none;">
@@ -69,12 +97,14 @@ public class Report implements Handler{
                                 </td>
                                 <td> %s </td>
                                 <td> %s </td>
-                                <td class="deleteButton"> <button class="deleteButton" onclick="deleteEvent(%s, %s)"> &#128465 </button> </td>
+                                <td class="deleteButton"> <button type="button"  class="deleteButton" onclick="deleteEvent(%s, %s)">&#128465</button> </td>
                             </tr>
                             """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"), giftInfo.get("EventID"), giftInfo.get("GiftID"));
                 }
                 html += """
                             </table>
+                            </form>
+                            </div>
                             """;
                                     
             }
@@ -85,10 +115,17 @@ public class Report implements Handler{
                         """;
             }
             html += """
-                        </div>
-                    </div>
-                </body>
-            </html>
+                
+                </div>
+            </aside>
+
+        
+
+            <div class="foot1">
+            &copy; Xander Dundon 2025
+            </div>
+        </body>
+    </html>
             """;
 
             context.html(html);
