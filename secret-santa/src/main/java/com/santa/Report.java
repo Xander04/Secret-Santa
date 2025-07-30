@@ -72,8 +72,9 @@ public class Report implements Handler{
                 """, eventSummary.get("EventName"), id, id, id, eventSummary.get("GiftCount"));
                 if (!gifts.isEmpty()) {
                 html += """
+                            <div class="report-table">
                                 <table id = "report">
-                                    <tr>
+                                    <tr class="head">
                                         <th> Sender </th>
                                         <th> Recipient </th>
                                         <th> Description </th>
@@ -91,12 +92,13 @@ public class Report implements Handler{
                                 </td>
                                 <td> %s </td>
                                 <td> %s </td>
-                                <td class="deleteButton"> <button type="button"  class="deleteButton" onclick="deleteEvent(%s, %s)">&#128465</button> </td>
+                                <td class="deleteButton"> <button type="button"  class="deleteButton" onclick="deleteEvent(%s, %s)">&#128465 </button> </td>
                             </tr>
                             """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"), giftInfo.get("EventID"), giftInfo.get("GiftID"));
                 }
                 html += """
                             </table>
+                            </div>
                             </form>
                             </div>
                             """;

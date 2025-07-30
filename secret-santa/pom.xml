@@ -24,6 +24,7 @@
                 <configuration>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
                             <mainClass>com.santa.Main</mainClass>
                         </manifest>
                     </archive>

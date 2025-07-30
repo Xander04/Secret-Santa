@@ -66,6 +66,23 @@
   padding:30px;
 }
 
+.report-table {
+  overflow: scroll;
+  height: 40vh;
+  scrollbar-width: none;
+
+  /* For Internet Explorer and Edge */
+  -ms-overflow-style: none;
+}
+
+/* For WebKit-based browsers (Chrome, Safari, etc.) */
+.report-table::-webkit-scrollbar {
+  display: none;
+}
+tr.head{
+  position: sticky;
+  top: 0px;
+}
 .titleHolder {
   flex-basis:15%;
   display:flex;
@@ -225,7 +242,7 @@
     border-color:white;
   }
 
-  .dropdown-content:hover, .dropdown-content-1:hover {
+  .dropdown-content:hover, .dropdown-content-1:hover, .dropdown-content-2:hover,.dropdown-content-3:hover  {
     background-color:#f9fff8;
   }
 
@@ -289,7 +306,7 @@
  /*   height:80vh; */
     justify-self:center;
     padding: 30px;
-    height: 40vh;
+    height: 60vh;
     width: 22vw;
   }
 
@@ -371,18 +388,12 @@
 
  .deleteButton {
   background-color: red;
-  width: fit-content + 2ch;
+  width: 3ch;
   font-weight: bold;
   text-align: center;
  }
  td.ShowHide > button {
   width: fit-content;
- }
-
- .deleteButton {
-  background-color: red;
-  width: fit-content;
-  font-weight: bold;
  }
  td.ShowHide > button {
   width: 100%;
