@@ -475,6 +475,7 @@ input[type=number] {
     width: 50vw;
   }
   .formstyle{
-    width: 50vw;
+    padding: 12.5vw;
+    width: 75vw;
   }
 }
