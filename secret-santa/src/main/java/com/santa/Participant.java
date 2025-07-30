@@ -47,25 +47,29 @@ public class Participant implements Handler {
         <body>
 
             <aside class="index" id = "Log in">
-                <div class="formstyle">
-                <form>
-                    <h1> %s </h1><br>
-                    <h3> %s </h3><br>
-                    </form>
-                </div>
-                <div class="formstyle">
-                    <form method="post" action="/Participant" enctype="multipart/form-data">
-                        <input type="hidden" name="EventID" value="%s">
-                        <label for="SenderName"> Your Name: </label><br>
-                        <input type="text" name="SenderName"><br>
-                        <label for="RecieverName"> Recipients Name: </label><br>
-                        <input type="text" name="RecieverName"><br>
-                        <label for="GiftDescription"> Description of gift wrapping: </label><br>
-                        <textarea type="long-text" name="GiftDescription"></textarea><br>
-                        <div class="loginBreak2"> </div>
-                        <button>Submit</button><br>
-                    </form>
-                </div>
+                <aside class="login_left" id = "Log in">
+                    <div class="formstyle">
+                    <form>
+                        <h1> %s </h1><br>
+                        <h3> %s </h3><br>
+                        </form>
+                    </div>
+                </aside>
+                <aside class="login_left" id = "Log in">
+                    <div class="formstyle">
+                        <form method="post" action="/Participant" enctype="multipart/form-data">
+                            <input type="hidden" name="EventID" value="%s">
+                            <label for="SenderName"> Your Name: </label><br>
+                            <input type="text" name="SenderName"><br>
+                            <label for="RecieverName"> Recipients Name: </label><br>
+                            <input type="text" name="RecieverName"><br>
+                            <label for="GiftDescription"> Description of gift wrapping: </label><br>
+                            <textarea type="long-text" name="GiftDescription"></textarea><br>
+                            <div class="loginBreak2"> </div>
+                            <button>Submit</button><br>
+                        </form>
+                    </div>
+                </aside>
             </aside>
 
         

@@ -27,10 +27,17 @@
     height: 60vh;
     background-color:#ebf8e8;
     display:flex;
+    flex-direction: row;
     justify-content:center;
     align-items:center;
-    padding:10vh;
+    padding-top: 10vh;
+    padding-bottom: 10vh;
+    padding-left: 10vw;
+    padding-right: 10vw;
   }
+
+/* Responsive layout - makes a one column layout instead of a two-column layout */
+
 .dontText, .dontText1 {
   font-family:Arial, Helvetica, sans-serif;
   color:#5a7b54;
@@ -142,6 +149,7 @@
   @media screen and (max-width: 800px) {
     .login_left, .login_right {
       flex-basis: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+      flex-direction: column;
       height:50%;
     }
   }
@@ -303,14 +311,16 @@
     margin-bottom:4vh;
   }
 
-  input {
+  input, textarea {
     width: 22vw;
     height: 4vh;
     text-indent:5px;
     background-color:white;
     margin-top:0.4vh;
   }
-
+  textarea{
+    height: 8vw;
+  }
   label {
     font-family:Arial, Helvetica, sans-serif;
     color:#5a7b54;
@@ -445,4 +455,15 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+@media (max-width: 800px) {
+  .index {
+    flex-direction: column;
+  }
+  input, textarea{
+    width: 50vw;
+  }
+  .formstyle{
+    width: 50vw;
+  }
 }
