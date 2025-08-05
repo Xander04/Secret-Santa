@@ -82,6 +82,7 @@
 tr.head{
   position: sticky;
   top: 0px;
+  background-color: #ebf8e8;
 }
 .titleHolder {
   flex-basis:15%;
