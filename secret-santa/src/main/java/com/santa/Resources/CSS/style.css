@@ -412,7 +412,7 @@ tr.head{
 
   button#name_from {
     display:inline-block;
-    transform: rotate(90deg);
+    transform: rotate(0deg);
     transition: transform 0.75s;
     animation-iteration-count: 1;
     animation-timing-function: ease-in;
@@ -424,6 +424,10 @@ tr.head{
     background: none;
     border: none;
     opacity: 0;
+    color: #15141A;
+    text-align: left;
+    font-size: 18px;
+    transform: rotate(0deg)
   }
 
   @keyframes fade-in {
