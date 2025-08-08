@@ -1,3 +1,7 @@
 secret-santa/Secret-Santa.code-workspace
 secret-santa/target/*
 secret-santa/src/main/java/com/santa/Resources/SECURE
+secret-santa/src/main/resources/db/*
+secret-santa/src/main/resources/SECURE
+Secret-Santa.jar
+config.json

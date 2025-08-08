@@ -1,0 +1,7 @@
+{
+    "hostname" : "127.0.0.1",
+    "http_port" : 8080,
+    "ssl_enabled" : false,
+    "ssl_port" : 4430,
+    "ssl_cert_dir" : ""
+}

@@ -7,10 +7,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class DBManager {
 
     private static final String URL = "jdbc:sqlite:secret-santa/src/main/resources/db/secret-santa.db";
-    
+
     public static HashMap<String, String> readEvent(String id) {
         HashMap<String, String> data = new HashMap<>();
         String query = String.format("SELECT * FROM Events WHERE EventID = %s", id);
@@ -86,10 +89,10 @@ public class DBManager {
         }
 
         return gifts;
-    }   
+    }
 
     public static void InsertGift(HashMap<String, String> GiftData) {
-        
+
         String query = String.format("INSERT INTO Gifts (EventID, SenderName, RecieverName, GiftDescription) VALUES (\"%s\",\"%s\",\"%s\",\"%s\")", GiftData.get("EventID"), GiftData.get("SenderName"), GiftData.get("RecieverName"), GiftData.get("GiftDescription"));
 
         System.out.println(query);
@@ -120,7 +123,7 @@ public class DBManager {
             System.out.println(e.getMessage());
         }
         return !events.isEmpty();
-                  
+
     }
 
     public static boolean Authenticate(String id, String hash) {
@@ -140,6 +143,7 @@ public class DBManager {
         }
         return !events.isEmpty();
     }
+
     public static void Deauthenticate(String tkn) {
         String query = String.format("DELETE FROM Tokens WHERE \"Token\" = \"%s\"", tkn);
         try (var conn = DriverManager.getConnection(URL)) {
@@ -225,9 +229,13 @@ public class DBManager {
             var rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                if (ChronoUnit.DAYS.between(Instant.parse(rs.getString("CreationDate")),Instant.now()) > 14) {
+                if (ChronoUnit.DAYS.between(Instant.parse(rs.getString("CreationDate")), Instant.now()) > 14) {
                     toPurge.add(rs.getString("EventID"));
                 }
+            }
+
+            for (String event : toPurge) {
+                DBManager.DeleteEvent(event);
             }
 
         } catch (SQLException e) {
@@ -246,7 +254,7 @@ public class DBManager {
             var rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                if (ChronoUnit.DAYS.between(Instant.parse(rs.getString("Created")),Instant.now()) > 1) {
+                if (ChronoUnit.DAYS.between(Instant.parse(rs.getString("Created")), Instant.now()) > 1) {
                     toPurge.add(rs.getString("Token"));
                 }
             }
@@ -295,6 +303,45 @@ public class DBManager {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static void deleteGift(String giftId) {
+        String query = String.format("DELETE FROM Gifts WHERE \"GiftID\" = \"%s\"", giftId);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            stmt.executeQuery(query);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+    }
+
+    public static String getPresJson(String EventId) {
+        JSONArray gifts = new JSONArray();
+        String query = String.format("SELECT GiftId, SenderName, RecieverName, GiftDescription FROM Gifts WHERE EventId = '%s'", EventId);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+            int id = 0;
+
+            while (rs.next()) {
+                JSONObject gift = new JSONObject();
+                gift.put("GiftId", rs.getString("GiftID"));
+                gift.put("SenderName", rs.getString("SenderName"));
+                gift.put("RecipientName", rs.getString("RecieverName"));
+                gift.put("GiftDescription", rs.getString("GiftDescription"));
+
+                gifts.put(id, gift);
+                id++;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return gifts.toString();
     }
 
 }

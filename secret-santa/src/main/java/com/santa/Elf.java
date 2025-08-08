@@ -6,35 +6,30 @@ public class Elf extends Thread {
 
     @Override public void run() {
 
-            while (true){
             //Purge old events
             ArrayList<String> events = DBManager.housekeepEvents();
 
-            for (String event : events) {
-                DBManager.DeleteEvent(event);
+            if (!events.isEmpty()) {
+                System.out.println("Purged " + events.size() + " events");
             }
-
-            System.out.println(events);
 
             //Purge old auth tokens
             ArrayList<String> tokens = DBManager.housekeepTokens();
             
-            System.out.println(tokens);
+            if (!tokens.isEmpty()) {
+                System.out.println("Purged " + tokens.size() + " tokens");
+            }
     
             for (String token : tokens) {
                 DBManager.Deauthenticate(token);
             }
-            
             try {
-                for (int i=0;i < 30; i++) {
-                Thread.sleep(9999);
-                Thread.sleep(9999);
-                Thread.sleep(9999);
-                Thread.sleep(9999);
-                Thread.sleep(9999);
-                Thread.sleep(9999);
-                }
-            } catch (Exception e) {}
-        }
+                Thread.sleep(60000);
+            } catch (InterruptedException e) {
+                System.err.println(e);
+            }
+
+            Thread housekeeper = new Elf();
+            housekeeper.start();
     }
 }

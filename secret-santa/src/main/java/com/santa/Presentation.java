@@ -1,21 +1,17 @@
 package com.santa;
 
-import java.util.HashMap;
-
-import static com.santa.DBManager.getEventSummary;
-
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 
-public class Dashboard implements Handler{
-    
-    @Override
-    public void handle(Context context) throws Exception {
-        String id = context.queryString();
-        
-        if (Helper.Authenticate(context)) {
+public class Presentation implements Handler{
 
-            HashMap<String, String> eventSummary = getEventSummary(id);
+    @Override
+    public void handle(Context context) {
+
+        String id = context.queryString();
+
+        if(Helper.Authenticate(context)) {
+
             String html = "";
             html += String.format("""
             <!DOCTYPE html>
@@ -25,6 +21,7 @@ public class Dashboard implements Handler{
             <link rel="icon" type="image/x-icon" href="logo.png">
             <script type="text/javascript" src="script.js"></script>
             <script type="text/javascript" src="index.js"></script>
+            <script type="text/javascript" src="presentation.js"></script>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
             <div class="head1">
             <a href="/"><img src="logo.png" class="logo" width=75px></a>
@@ -54,18 +51,24 @@ public class Dashboard implements Handler{
             <div class="head_line">
             </div>
         </head>
-        <body>
+        <body onload="main(%s)">
 
             <aside class="index" id = "Log in">
-                <div class="formstyle">
                 <form>
+                <div id="pres_container" >
+                        <h1> %s </h1>
+                        <div class="loginBreak"> </div>
+                        <p id="name_to">To: </p>
+                        <div class="loginBreak2"> </div>
+                        <div id="animate" onload="animation()">
+                            <p style="display:inline-block;"> From: </p><button type="button"  id="name_from" class="hidden" onclick="revealSender()"></button>
+                        </div>
+                        <div class="loginBreak2"> </div>
+                        <p id="description"> </p>
+                        <div class="loginBreak2"> </div>
+                        <button type="button" onclick="next()"> Next </button>
+                    </div>
                     </form>
-                </div>
-                <div class="formstyle">
-                    <form method="post" action="/Participant" enctype="multipart/form-data">
-                        <h1>Gift Count: %s</h1>
-                    </form>
-                </div>
             </aside>
 
         
@@ -75,9 +78,10 @@ public class Dashboard implements Handler{
             </div>
         </body>
     </html>
-            """, eventSummary.get("EventName"), id, id, id, eventSummary.get("GiftCount"));
+                """,id,  DBManager.getEventSummary(id).get("EventName"), id, id, id, DBManager.getEventSummary(id).get("EventName"));
 
             context.html(html);
         }
     }
+
 }
