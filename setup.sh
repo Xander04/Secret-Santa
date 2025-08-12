@@ -5,6 +5,20 @@ cd secret-santa
 mvn package
 cp target/secret-santa*.jar ..
 
+if [[ "$1" = "-d" ]]; then
+    echo "Using defaults"
+    cat > config.json <<- EOM
+    {
+        "hostname" : "127.0.0.1",
+        "http_port" : 8080,
+        "ssl_enabled" : false,
+        "ssl_port" : 4430,
+        "ssl_cert_dir" : ""
+    }
+EOM
+else
+    
+
 ip_regex='^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
 port_regex='^([0-9]{1,5})$'
 
@@ -65,3 +79,4 @@ cat > config.json <<- EOM
     "ssl_cert_dir" : "$cert"
 }
 EOM
+fi
