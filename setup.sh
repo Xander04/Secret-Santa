@@ -80,3 +80,11 @@ cat > config.json <<- EOM
 }
 EOM
 fi
+
+cd ..
+cat > serverStart.sh <<- EOM
+#!/bin/bash
+
+java -jar secret-santa*.jar
+EOM
+chmod +x serverStart.sh
