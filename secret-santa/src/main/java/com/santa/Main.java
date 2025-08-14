@@ -3,8 +3,10 @@ package com.santa;
 import static com.santa.DBManager.Authenticate;
 import static com.santa.DBManager.InsertToken;
 import static com.santa.DBManager.ValidateEventID;
+import com.santa.Logger;
 
 import java.io.FileReader;
+import java.io.PrintStream;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -26,6 +28,8 @@ public class Main {
     public static final String IMG_DIR = "com/santa/IMG/";
 
     public static void main(String[] args) {
+        PrintStream customStream = new Logger(System.out);
+        System.setOut(customStream);
         JSONObject serv_config;
         try{
             Scanner scr = new Scanner(new FileReader("config.json"));
@@ -52,6 +56,7 @@ public class Main {
         final String HOSTNAME = serv_config.getString("hostname");
         final String SSL_DIR = serv_config.getString("ssl_cert_dir");
         final boolean SSL_ENABLED = serv_config.getBoolean("ssl_enabled");
+        Logger.level = LogLevel.valueOf(serv_config.getString("log_level"));
 
 
         Javalin app = Javalin.create(config -> {
