@@ -13,7 +13,8 @@ if [[ "$1" = "-d" ]]; then
         "http_port" : 8080,
         "ssl_enabled" : false,
         "ssl_port" : 4430,
-        "ssl_cert_dir" : ""
+        "ssl_cert_dir" : "",
+        "log_level" : "WARN"
     }
 EOM
 else
@@ -76,7 +77,8 @@ cat > config.json <<- EOM
     "http_port" : $httpPort,
     "ssl_enabled" : $ssl,
     "ssl_port" : $secPort,
-    "ssl_cert_dir" : "$cert"
+    "ssl_cert_dir" : "$cert",
+    "log_level" : "WARN"
 }
 EOM
 fi
