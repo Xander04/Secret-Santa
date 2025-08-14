@@ -3,5 +3,6 @@
     "http_port" : 8080,
     "ssl_enabled" : false,
     "ssl_port" : 4430,
-    "ssl_cert_dir" : ""
+    "ssl_cert_dir" : "",
+    "log_level" : "WARN"
 }
