@@ -1,9 +1,5 @@
 package com.santa;
 
-import static com.santa.DBManager.Authenticate;
-import static com.santa.DBManager.InsertToken;
-import static com.santa.DBManager.ValidateEventID;
-
 import java.io.FileReader;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -13,6 +9,10 @@ import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
+
+import static com.santa.DBManager.Authenticate;
+import static com.santa.DBManager.InsertToken;
+import static com.santa.DBManager.ValidateEventID;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SslPlugin;
@@ -27,12 +27,9 @@ public class Main {
 
     public static void main(String[] args) {
         JSONObject serv_config;
-        try{
-            Scanner scr = new Scanner(new FileReader("config.json"));
+        try (Scanner scr = new Scanner(new FileReader("config.json"))) {
             scr.useDelimiter("\\A");
             serv_config = new JSONObject(scr.next());
-            scr.close();
-
         }
         catch(Exception e) {
             System.err.println("config not found, using default config");
