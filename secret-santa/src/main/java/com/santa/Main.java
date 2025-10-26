@@ -1,13 +1,16 @@
 package com.santa;
 
-import static com.santa.DBManager.Authenticate;
+import static com.santa.DBManager.AuthenticateEvent;
 import static com.santa.DBManager.InsertToken;
+import static com.santa.DBManager.InsertUserToken;
 import static com.santa.DBManager.ValidateEventID;
+import static com.santa.DBManager.getUserIdByEmail;
 
 import java.io.FileReader;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
@@ -27,12 +30,9 @@ public class Main {
 
     public static void main(String[] args) {
         JSONObject serv_config;
-        try{
-            Scanner scr = new Scanner(new FileReader("config.json"));
+        try (Scanner scr = new Scanner(new FileReader("config.json"))) {
             scr.useDelimiter("\\A");
             serv_config = new JSONObject(scr.next());
-            scr.close();
-
         }
         catch(Exception e) {
             System.err.println("config not found, using default config");
@@ -98,16 +98,17 @@ public class Main {
         // Configure GET routes
         app.get("/", new Index());
         app.get("/Dashboard", new Dashboard());
-        app.get("/Participant", new Participant());         //?Rename
+        app.get("/Participant", new ParticipantLogin());         //?Rename
         app.get("/login", new Login());
         app.get("/register", new Register());
         app.get("/report", new Report());
         app.get("/presentation", new Presentation());
+        app.get("/user", new Participant());
 
         app.get("/presentation-data", ctx -> {
             String id = ctx.queryString();
 
-            String tkn = DBManager.AuthVerify(ctx.cookie("Auth"));
+            String tkn = DBManager.AuthVerifyUserToken(ctx.cookie("Auth"));
             if (tkn == null || !tkn.equals(id)) {
                 ctx.status(HttpStatus.FORBIDDEN);
             }
@@ -129,10 +130,10 @@ public class Main {
             data.put("EventID", ctx.formParam("EventID"));
             data.put("SenderName", ctx.formParam("SenderName"));
             data.put("RecieverName", ctx.formParam("RecieverName"));
-            data.put("GiftDescription", ctx.formParam("GiftDescription"));
-
+            data.put("GiftDescription", ctx.formParam("gift"));
+            System.out.println("Received gift description: " + data.get("GiftDescription"));
             if (ValidateEventID(data.get("EventID"))) {
-                DBManager.InsertGift(data);
+                DBManager.updateGiftDescription(ctx.formParam("UserID"), ctx.formParam("gift"));
 
                 ctx.html("Done!");
             } else {
@@ -142,8 +143,8 @@ public class Main {
         });
         app.post("/login", ctx -> {
             String EventId = ctx.formParam("EventId");
-            String hashstr = Helper.getPwHash(ctx);
-            if (Authenticate(EventId, hashstr)) {
+                String hashstr = Helper.getPwHash(ctx.formParam("EventPw"));
+            if (AuthenticateEvent(EventId, hashstr)) {
                 ctx.status(HttpStatus.OK);
                 System.out.println(ctx.formParam("tokenise"));
                 String tkn = Helper.generateNewToken();
@@ -172,9 +173,9 @@ public class Main {
                 data.put("EventID", id);
                 DBManager.InsertEvent(data);
 
-                String hashstr = Helper.getPwHash(ctx);
+                String hashstr = Helper.getPwHash(ctx.formParam("EventPw"));
 
-                DBManager.InsertAuth(id, hashstr);
+                DBManager.InsertEventAuth(id, hashstr);
 
                 String tkn = Helper.generateNewToken();
                 InsertToken(id, tkn);
@@ -186,14 +187,79 @@ public class Main {
             }
 
         });
+        app.post("/assign-secret-santas", ctx -> {
+            String eventId = ctx.queryString();
+
+            System.out.println("Auth token: " + ctx.cookie("Auth"));
+            System.out.println("Event ID: " + eventId);
+            if (DBManager.AuthVerifyEventToken(ctx.cookie("Auth")) != null && DBManager.AuthVerifyEventToken(ctx.cookie("Auth")).equals(eventId)) {
+                ArrayList<Integer> userIds = DBManager.getUsersFromEvent(eventId);
+                System.out.println("Assigning secret santas for event: " + eventId + " with users: " + userIds.toString());
+                ArrayList<Integer> gifters = new ArrayList<>(userIds);
+                ArrayList<Integer> receivers = new ArrayList<>(userIds);
+                for (Integer gifter : gifters) {
+                    SecureRandom rand = new SecureRandom();
+                    Integer receiver = -1;
+                    while (receiver == -1 || receiver.equals(gifter)) {
+                         receiver = receivers.get(rand.nextInt(receivers.size()));
+                    }
+                    DBManager.assignSecretSanta(Integer.toString(gifter), Integer.toString(receiver));
+                    receivers.remove(receiver);
+                }
+                ctx.status(HttpStatus.OK);
+            } else {
+                ctx.status(HttpStatus.FORBIDDEN);
+            }
+        });
+        app.get("/user/status", ctx -> {
+            String id = ctx.header("id");
+            String email = ctx.header("email");
+
+            boolean status = DBManager.isEmailTaken(email, id);
+            if (status) {
+                ctx.status(HttpStatus.CONFLICT);
+            } else {
+                ctx.status(HttpStatus.OK);
+            }
+        });
+        app.get("/user/login", ctx -> {
+            String email = ctx.header("email");
+            String hashstr = Helper.getPwHash(ctx.header("password"));
+            String id = DBManager.AuthenticateUser(email, hashstr);
+
+            if (id != null) {
+                String tkn = Helper.generateNewToken();
+                InsertUserToken(id, tkn);
+                ctx.cookie("Auth", tkn);
+                ctx.status(HttpStatus.OK);
+                ctx.redirect("/user?" + id);
+            } else {
+                ctx.status(HttpStatus.FORBIDDEN);
+            }
+        });
+        app.get("/user/register", ctx -> {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("EventID", ctx.header("id"));
+            data.put("Email",  ctx.header("email"));
+            data.put("PasswordHash", Helper.getPwHash(ctx.header("password")));
+            data.put("Name", ctx.header("name"));
+
+            DBManager.InsertUser(data);
+            String id = getUserIdByEmail(data.get("Email"));
+            String tkn = Helper.generateNewToken();
+            InsertUserToken(id, tkn);
+            ctx.cookie("Auth", tkn);
+            ctx.status(HttpStatus.OK);
+            ctx.redirect("/user?" + id);
+        });
 
         // Configure delete routes
         app.delete("/report", ctx -> {
             System.out.println("delete" + ctx.header("EventId"));
             System.out.println("auth: " + ctx.cookie("Auth"));
-            String eventId = DBManager.AuthVerify(ctx.cookie("Auth"));
+            String eventId = DBManager.AuthVerifyEventToken(ctx.cookie("Auth"));
             if (eventId != null && eventId.equals(ctx.header("EventId"))) {
-                DBManager.deleteGift(ctx.header("GiftId"));
+                DBManager.deleteUser(ctx.header("GiftId"));
                 ctx.status(HttpStatus.OK);
             } else {
                 System.err.printf("""

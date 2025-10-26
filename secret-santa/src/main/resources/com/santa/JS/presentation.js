@@ -31,8 +31,8 @@ async function revealSender() {
     button.style.transform='rotate('+0+'deg)'; 
     button.style.opacity = 0;
     button.style.animationName = "fade-in";
-    button.style.opacity = 1;
-    button.style.transform='rotate('+0+'deg)'; 
+    button.style.opacity = 1;    
+    
 }
 
 async function Animation() {
@@ -43,6 +43,7 @@ async function Animation() {
         button.style.transform='rotate('+5+'deg)';
         await sleep(1000);
     }
+    button.style.transform='rotate('+0+'deg)'; 
 }
 
 function next() {

@@ -3,28 +3,28 @@ package com.santa;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.santa.DBManager.GiftsFromEvent;
+import static com.santa.DBManager.getUsersFromEvent;
 import static com.santa.DBManager.getEventSummary;
-import static com.santa.DBManager.readGift;
+import static com.santa.DBManager.readUser;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 
-public class Report implements Handler{
-    
+public class Report implements Handler {
+
     @Override
     public void handle(Context context) throws Exception {
-        String id = context.queryString();
+        String eventId = context.queryString();
 
         if (Helper.Authenticate(context)) {
 
-            ArrayList<Integer> gifts = GiftsFromEvent(id);
-            HashMap<String, String> eventSummary = getEventSummary(id);
+            ArrayList<Integer> userIds = getUsersFromEvent(eventId);
+            HashMap<String, String> eventSummary = getEventSummary(eventId);
             String html = "";
             html += String.format("""
            <!DOCTYPE html>
         <head>
-            <title>Secret Santa | Login</title>
+            <title>Secret Santa | Report</title>
             <link rel='stylesheet' type='text/css' href='style.css' />
             <link rel="icon" type="image/x-icon" href="logo.png">
             <script type="text/javascript" src="script.js"></script>
@@ -47,11 +47,11 @@ public class Report implements Handler{
                         <div class="dropdown-line"> </div>
                     </div>
                     <div id="eventDrop2" class="dropdown-content-2 dropdown-content-el">
-                        <a href="/report?%s">Report</a>
+                        <a href="/report?EventId=%s">Report</a>
                         <div class="dropdown-line"> </div>
                     </div>
                     <div id="eventDrop3" class="dropdown-content-3 dropdown-content-el">
-                        <a href="/presentation?%s">Present</a>
+                        <a href="/presentation?EventId=%s">Present</a>
                     </div>
                 </div>
             </div>
@@ -69,8 +69,9 @@ public class Report implements Handler{
                             <h1> Gift Report </h1>
                             </center>
                             
-                """, eventSummary.get("EventName"), id, id, id, eventSummary.get("GiftCount"));
-                if (!gifts.isEmpty()) {
+                """, eventSummary.get("EventName"), eventId, eventId, eventId, eventSummary.get("UserCount"));
+
+            if (!userIds.isEmpty()) {
                 html += """
                             <div class="report-table">
                                 <table id = "report">
@@ -82,19 +83,19 @@ public class Report implements Handler{
                                     </tr>
 
                                     """;
-                for (int i = 0; i < gifts.size(); i++) {
-                    HashMap<String, String> giftInfo = readGift(Integer.toString(gifts.get(i)));
+                for (int userId : userIds) {
+                    HashMap<String, String> userInfo = readUser(Integer.toString(userId));
                     html += String.format("""
                             <tr id="%s">
                                 <td class="ShowHide">
-                                    <button type="button" onclick="displayText(%s)" id="%sa" style="display: inline-block">&#x1F441;</button>
-                                    <button type="button" onclick="hideText(%s)" id="%sb" style="display: none"><s>&#x1F441;</s> %s</button>
+                                    <button type="button" onclick="displayText('%s')" id="%sa" style="display: inline-block">&#x1F441;</button>
+                                    <button type="button" onclick="hideText('%s')" id="%sb" style="display: none"><s>&#x1F441;</s> %s</button>
                                 </td>
                                 <td> %s </td>
                                 <td> %s </td>
-                                <td class="deleteButton"> <button type="button"  class="deleteButton" onclick="deleteEvent(%s, %s)">&#128465 </button> </td>
+                                <td class="deleteButton"> <button type="button" class="deleteButton" onclick="deleteEvent('%s', '%s')">&#128465 </button> </td>
                             </tr>
-                            """, giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("GiftID"), giftInfo.get("SenderName"), giftInfo.get("RecieverName"), giftInfo.get("GiftDescription"), giftInfo.get("EventID"), giftInfo.get("GiftID"));
+                            """, userInfo.get("UserID"), userInfo.get("UserID"), userInfo.get("UserID"), userInfo.get("UserID"), userInfo.get("UserID"), userInfo.get("Name"), DBManager.getUserName(userInfo.get("RecieverID")), userInfo.get("GiftDescription"), userInfo.get("EventID"), userInfo.get("UserID"));
                 }
                 html += """
                             </table>
@@ -102,20 +103,16 @@ public class Report implements Handler{
                             </form>
                             </div>
                             """;
-                                    
-            }
-            else {
+
+            } else {
                 html += """
                         <h2> No Gifts Yet! </h3> <br>
                         <h3> Spread the word and have participants register their gifts </h3>
                         """;
             }
             html += """
-                
                 </div>
             </aside>
-
-        
 
             <div class="foot1">
             &copy; Xander Dundon 2025

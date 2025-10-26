@@ -1,4 +1,13 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "santadb",
+            "database": "${workspaceFolder:Secret-Santa}/Secret-Santa.jar"
+        }
+    ]
 }
