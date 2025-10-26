@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
@@ -129,10 +130,10 @@ public class Main {
             data.put("EventID", ctx.formParam("EventID"));
             data.put("SenderName", ctx.formParam("SenderName"));
             data.put("RecieverName", ctx.formParam("RecieverName"));
-            data.put("GiftDescription", ctx.formParam("GiftDescription"));
-
+            data.put("GiftDescription", ctx.formParam("gift"));
+            System.out.println("Received gift description: " + data.get("GiftDescription"));
             if (ValidateEventID(data.get("EventID"))) {
-                DBManager.updateGiftDescription(ctx.formParam("UserId"), ctx.formParam("gift"));
+                DBManager.updateGiftDescription(ctx.formParam("UserID"), ctx.formParam("gift"));
 
                 ctx.html("Done!");
             } else {
@@ -185,6 +186,30 @@ public class Main {
 
             }
 
+        });
+        app.post("/assign-secret-santas", ctx -> {
+            String eventId = ctx.queryString();
+
+            System.out.println("Auth token: " + ctx.cookie("Auth"));
+            System.out.println("Event ID: " + eventId);
+            if (DBManager.AuthVerifyEventToken(ctx.cookie("Auth")) != null && DBManager.AuthVerifyEventToken(ctx.cookie("Auth")).equals(eventId)) {
+                ArrayList<Integer> userIds = DBManager.getUsersFromEvent(eventId);
+                System.out.println("Assigning secret santas for event: " + eventId + " with users: " + userIds.toString());
+                ArrayList<Integer> gifters = new ArrayList<>(userIds);
+                ArrayList<Integer> receivers = new ArrayList<>(userIds);
+                for (Integer gifter : gifters) {
+                    SecureRandom rand = new SecureRandom();
+                    Integer receiver = -1;
+                    while (receiver == -1 || receiver.equals(gifter)) {
+                         receiver = receivers.get(rand.nextInt(receivers.size()));
+                    }
+                    DBManager.assignSecretSanta(Integer.toString(gifter), Integer.toString(receiver));
+                    receivers.remove(receiver);
+                }
+                ctx.status(HttpStatus.OK);
+            } else {
+                ctx.status(HttpStatus.FORBIDDEN);
+            }
         });
         app.get("/user/status", ctx -> {
             String id = ctx.header("id");

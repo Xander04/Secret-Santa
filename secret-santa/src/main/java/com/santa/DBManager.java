@@ -438,7 +438,7 @@ public class DBManager {
             var rs = stmt.executeQuery(query);
             
             if (rs.next()) {
-                return rs.getString("ReceiverID");
+                return rs.getString("RecieverID");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

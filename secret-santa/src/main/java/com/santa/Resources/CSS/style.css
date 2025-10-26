@@ -384,6 +384,16 @@ tr.head{
     display: none;
   }
 
+  .participants-table {
+    width: 35vw;
+    border-collapse: collapse;
+    align-content: center;
+    text-align: center;
+  }
+  .assigned-checkbox {
+    width: 20px;
+    height: 20px;
+  }
   tr:nth-child(even) {
     background-color: #D6EEEE;
   }

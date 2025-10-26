@@ -18,7 +18,7 @@ public class Participant implements Handler {
             context.redirect("/");
         }
 
-        if (DBManager.AuthVerifyUserToken(context.cookie("Auth")).equals(UserId)) {
+        if (DBManager.AuthVerifyUserToken(context.cookie("Auth")) != null && DBManager.AuthVerifyUserToken(context.cookie("Auth")).equals(UserId)) {
             System.out.println("User authenticated");
         } else {
             context.redirect("/");
@@ -69,7 +69,8 @@ public class Participant implements Handler {
                 <aside class="login_left" id = "Log in">
                     <div class="formstyle">
                     """, details.get("EventName"), details.get("EventDescription"));
-                            if (DBManager.getSecretSanta(UserId) != "-1") {
+                    System.out.println(DBManager.getSecretSanta(UserId));
+                            if (DBManager.getSecretSanta(UserId) != null) {
                                 html += String.format("""
                                 <form method="post" action="/Participant" enctype="multipart/form-data">
                                             <h2>Your Secret Santa is: %s</h2>
@@ -77,8 +78,8 @@ public class Participant implements Handler {
                                     <input type="hidden" id="UserID" name="UserID" value="%s">
                                     <input type="hidden" id="EventID" name="EventID" value="%s">
                                     <label for="gift"> Gift Description: </label><br>
-                                    <input-field type="text" id="gift" name="gift"></input-field><br>
-                                        <div class="loginBreak2"> </div>
+                                    <textarea id="gift" name="gift"></textarea><br>
+                                    <div class="loginBreak2"> </div>
                                     <button>Submit</button><br>
                                 </form>
                                 """, DBManager.getUserName(DBManager.getSecretSanta(UserId)), UserId, EventId);
