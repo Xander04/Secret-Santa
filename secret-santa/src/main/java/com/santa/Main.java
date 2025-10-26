@@ -24,9 +24,9 @@ import io.javalin.http.HttpStatus;
 
 
 public class Main {
-    public static final String CSS_DIR = "com/santa/Resources/CSS/";
-    public static final String JS_DIR = "com/santa/Resources/JS/";
-    public static final String IMG_DIR = "com/santa/Resources/IMG/";
+    public static final String CSS_DIR = "com/santa/CSS/";
+    public static final String JS_DIR = "com/santa/JS/";
+    public static final String IMG_DIR = "com/santa/IMG/";
 
     public static void main(String[] args) {
         JSONObject serv_config;
