@@ -429,7 +429,39 @@ public class DBManager {
             System.out.println(e.getMessage());
         }
     }
+
+    public static String getSecretSanta(String userId) {
+        String query = String.format("SELECT RecieverID FROM User WHERE UserID = %s", userId);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+            
+            if (rs.next()) {
+                return rs.getString("ReceiverID");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return "-1"; // No receiver assigned
+    }
     
+    public static String getUserName (String userId) {
+        String query = String.format("SELECT Name FROM User WHERE UserID = %s", userId);
+        try (var conn = DriverManager.getConnection(URL)) {
+            System.out.println("Connection to SQLite has been established.");
+            var stmt = conn.createStatement();
+            var rs = stmt.executeQuery(query);
+            
+            if (rs.next()) {
+                return rs.getString("Name");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     public static boolean isEmailTaken(String email, String eventId) {
         String query = String.format("SELECT COUNT(*) FROM User WHERE [Email ] = '%s' AND EventID = %s", email, eventId);
         try (var conn = DriverManager.getConnection(URL)) {

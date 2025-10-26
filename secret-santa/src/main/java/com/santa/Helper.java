@@ -13,7 +13,7 @@ public class Helper {
     public static boolean Authenticate(Context context) {
         String id = context.queryString();
         HttpStatus response;
-        String tkn = DBManager.AuthVerify(context.cookie("Auth"));
+        String tkn = DBManager.AuthVerifyEventToken(context.cookie("Auth"));
         boolean authorised = false;
         if (tkn == null) {
             response = HttpStatus.NETWORK_AUTHENTICATION_REQUIRED;
@@ -41,12 +41,11 @@ public class Helper {
         return base64Encoder.encodeToString(randomBytes);
     }
     
-    public static String getPwHash(Context ctx) throws NoSuchAlgorithmException {
+    public static String getPwHash(String password) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         String hashstr = "";
-        String EventPw = ctx.formParam("EventPw");
-        if (EventPw != null) {
-            byte[] hash = digest.digest(EventPw.getBytes(StandardCharsets.UTF_8));
+        if (password != null) {
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte b : hash) {
                 sb.append(String.format("%X", b));

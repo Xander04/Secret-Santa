@@ -380,6 +380,10 @@ tr.head{
     background-color:red;
   }
 
+  #register {
+    display: none;
+  }
+
   tr:nth-child(even) {
     background-color: #D6EEEE;
   }

@@ -3,9 +3,9 @@ package com.santa;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.santa.DBManager.GiftsFromEvent;
+import static com.santa.DBManager.getUsersFromEvent;
 import static com.santa.DBManager.getEventSummary;
-import static com.santa.DBManager.readGift;
+import static com.santa.DBManager.readUser;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -18,7 +18,7 @@ public class Report implements Handler{
 
         if (Helper.Authenticate(context)) {
 
-            ArrayList<Integer> gifts = GiftsFromEvent(id);
+            ArrayList<Integer> gifts = getUsersFromEvent(id);
             HashMap<String, String> eventSummary = getEventSummary(id);
             String html = "";
             html += String.format("""
@@ -83,7 +83,7 @@ public class Report implements Handler{
 
                                     """;
                 for (int i = 0; i < gifts.size(); i++) {
-                    HashMap<String, String> giftInfo = readGift(Integer.toString(gifts.get(i)));
+                    HashMap<String, String> giftInfo = readUser(Integer.toString(gifts.get(i)));
                     html += String.format("""
                             <tr id="%s">
                                 <td class="ShowHide">
