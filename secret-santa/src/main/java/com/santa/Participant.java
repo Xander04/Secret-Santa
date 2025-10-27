@@ -72,7 +72,7 @@ public class Participant implements Handler {
                     System.out.println(DBManager.getSecretSanta(UserId));
                             if (DBManager.getSecretSanta(UserId) != null) {
                                 html += String.format("""
-                                <form method="post" action="/Participant" enctype="multipart/form-data" onsubmit="alert('Gift Description Updated')">
+                                <form method="post" action="/Participant" enctype="multipart/form-data" onsubmit="alert('Gift Description Updated'); return false;">
                                             <h2>Your Secret Santa is: %s</h2>
                                             <div class="loginBreak"></div>
                                     <input type="hidden" id="UserID" name="UserID" value="%s">
