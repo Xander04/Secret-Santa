@@ -135,9 +135,9 @@ public class Main {
             if (ValidateEventID(data.get("EventID"))) {
                 DBManager.updateGiftDescription(ctx.formParam("UserID"), ctx.formParam("gift"));
 
-                ctx.html("Done!");
+                ctx.status(HttpStatus.OK);
             } else {
-                ctx.html("Event Not Found!");
+                ctx.status(HttpStatus.NOT_FOUND);
             }
 
         });
