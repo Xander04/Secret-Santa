@@ -61,7 +61,7 @@ public class Presentation implements Handler{
                         <p id="name_to">To: </p>
                         <div class="loginBreak2"> </div>
                         <div id="animate" onload="animation()">
-                            <p style="display:inline-block;"> From: </p><button type="button"  id="name_from" class="hidden" onclick="revealSender();return false;"></button>
+                            <p style="display:inline-block;"> From: </p><button type="button"  id="name_from" class="hidden" onclick="revealSender();"></button>
                         </div>
                         <div class="loginBreak2"> </div>
                         <p id="description"> </p>
